@@ -1,0 +1,9 @@
+finish server side of project
+
+
+Learn more about python chess library
+
+Come up with a structure for the webapp
+    How is the frontend going to look?
+    How exactly is it going to connect to the backend?
+    
