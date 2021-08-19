@@ -30,7 +30,7 @@ def register():
                 'INSERT INTO user (username) VALUES (?)', (username,)
             ) 
             db.commit()
-            return redirect(url_for('login'))
+            return redirect(url_for('views.login'))
         flash(error)
     return render_template('register.html')
 
@@ -55,6 +55,28 @@ def login():
         flash(error)
     return render_template('login.html')
 
+
+@view.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('views.home'))
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('views.login'))
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+@view.route('/chessboard')
+@login_required
+def chessboard():
+    db = get_db()
+    return render_template('chessboard.html')
+
 @view.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -66,12 +88,3 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-@view.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('views.home'))
-
-@view.route('/chessboard')
-def chessboard():
-    db = get_db()
-    return render_template('chessboard.html')
