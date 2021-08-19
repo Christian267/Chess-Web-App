@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from . import db
 
 def create_app():
     """Construct the application"""
@@ -7,7 +8,9 @@ def create_app():
     # create and configure app
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
-
+    app.config.from_mapping(
+        DATABASE=os.path.join(app.instance_path,'chessapp.sqlite')
+    )
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
@@ -18,7 +21,7 @@ def create_app():
     with app.app_context():
         from .views import view
     
-    # Register routes
-    app.register_blueprint(view, url_prefix='/')
+    db.init_app(app)
+    app.register_blueprint(view)
     
     return app

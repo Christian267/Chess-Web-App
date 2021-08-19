@@ -75,7 +75,7 @@ function onDrop (source, target) {
   var move = game.move({
     from: source,
     to: target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
+    promotion: 'q'
   })
 
   // illegal move
@@ -98,12 +98,12 @@ function updateStatus () {
     moveColor = 'Black'
   }
 
-  // checkmate?
+  // checkmate
   if (game.in_checkmate()) {
     status = 'Game over, ' + moveColor + ' is in checkmate.'
   }
 
-  // draw?
+  // draw
   else if (game.in_draw()) {
     status = 'Game over, drawn position'
   }
@@ -133,8 +133,6 @@ var config = {
 board = Chessboard('myBoard', config)
 
 updateStatus()
-// --- End Example JS ----------------------------------------------------------
-
     </script>
 
 {% endblock %}

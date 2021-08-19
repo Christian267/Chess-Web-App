@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %} 
+<style type="text/css">
+  @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+  
+  .Register-page {
+    width: 360px;
+    padding: 8% 0 0;
+    margin: auto;
+  }
+  .form {
+    position: sticky;
+    z-index: 1;
+    background: #ffffff;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+  }
+  .form input { 
+    border-radius: 8px 8px 8px 8px;
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+
+  .form input:focus{
+    border: 1px solid #1670BE;
+    box-shadow: 0 0 3px #1670BE;
+    outline-offset: 0px;
+    outline: none;
+  }
+  .form button {
+    border-radius: 30px 30px 30px 30px;
+    text-transform: uppercase;
+    outline: 5px;
+    width: 100%;
+    border: 0;
+    padding: 10px;
+    color: #FFFFFF;
+    background-color: #0c72f7;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+  }
+  .form button:hover,.form button:active,.form button:focus {
+    background: #0363e0;
+    -webkit-transition: background-color 100ms linear;
+    -ms-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
+  }
+
+  .form .message {
+    margin: 15px 0 0;
+    color: #086bee;
+    font-size: 12px;
+  }
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  .container:before, .container:after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  
+  </style>
+  
+  <div class="Register-page">
+    <div class="form">
+        <form class="login-form" action="#" method="POST">
+          <input type="text" id="username" name="username" placeholder="Username"/>
+          <button type="submit" id="submitUsernameButton">Register</button>   
+        </form>   
+        {% for message in get_flashed_messages() %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+  </div>   
+{% endblock %}
