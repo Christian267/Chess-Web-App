@@ -12,7 +12,7 @@ def handle_my_custom_event(json):
 
 @socketio.on('chess move')
 def handle_chess_move(move):
-     emit("chess move", move, broadcast=True)
+     emit("chess move", move, broadcast=True, include_self=False)
 
 
 if __name__=="__main__":

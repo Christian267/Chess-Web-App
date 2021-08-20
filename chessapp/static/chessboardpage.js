@@ -1,10 +1,4 @@
 var socket = io.connect("http://127.0.0.1:5000/");
-socket.on("chess move", function(move) {
-    console.log('Socket has recieved')
-    game.move(move);
-    board.position(game.fen());
-    updateStatus();
-});
 
 var board = null;
 var game = new Chess();
@@ -35,6 +29,7 @@ if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
 
 function onDrop (source, target) {
 // see if the move is legal
+console.log('This is written at 6:17PM')
 var move = game.move({
     from: source,
     to: target,
@@ -84,3 +79,9 @@ else {
     }
 }
 }
+
+socket.on("chess move", function(move) {
+    game.move(move);
+    board.position(game.fen());
+    updateStatus();
+});
