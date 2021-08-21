@@ -1,7 +1,7 @@
 import functools
 from flask import Blueprint
 from flask import Blueprint, flash, g, redirect, render_template, request,\
-                  session, url_for
+                  session, url_for, jsonify
 from chessapp.db import get_db
 
 view = Blueprint('views', __name__)
@@ -77,6 +77,29 @@ def chessboard():
     db = get_db()
     return render_template('chessboard.html')
 
+@view.route('/get_username')
+def get_username():
+    data = {'username': ''}
+    if g.user:
+        data['username'] = g.user['username']
+    return jsonify(data)
+
+@view.route('/get_players')
+def get_players():
+    db = get_db()
+    players = db.execute(
+        'SELECT white AND black FROM chessboard WHERE id = 0'
+    )
+    return players
+
+@view.route('/get_history')
+def get_history(username):
+    db = get_db()
+    gamehistory = db.execute(
+        'SELECT * from history WHERE winner = ? OR loser = ? ORDER BY created', (username, username)
+    )
+    return gamehistory
+
 @view.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -88,3 +111,8 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
+def setWhite():
+    print('White was Pressed!!!!!!!!')
+
+def setBlack():
+    print('Black was Pressed!!!!!!!!')

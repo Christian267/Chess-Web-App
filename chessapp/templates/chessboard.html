@@ -1,42 +1,54 @@
 {% extends "base.html" %}
 {% block title %}ChessBoard{% endblock %}
 {% block content %}
-<style type="text/css">
-    .board{
-      position: relative;
-      z-index: 1;
-      margin: 0 auto 200px;
-      padding: 0px;
-      width: 1200px;
-      z-index: 1;
-      text-align: center;
-      box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
-    }
+  <style type="text/css">
+      .board{
+        position: relative;
+        z-index: 1;
+        margin: 0 auto 200px;
+        padding: 0px;
+        width: 1200px;
+        z-index: 1;
+        text-align: center;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+      }
 
-    .chessBoard{.
-    position: absolute;
-    left: -200px;
-    width: 700px;   
-    height: auto;
-    margin: 0 auto;
-    padding: 10px;
-    position: relative;
-    }
-    
-</style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='chessboard/css/chessboard-1.0.0.css') }}">
-    <div id='gameBoard' class='board'>
-        <div class="chessBoard" id="myBoard"></div>
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="{{ url_for('static', filename='chessboard/js/chessboard-1.0.0.js') }}"></script>
-        <script src="{{ url_for('static', filename='chessboard/js/chess.js') }}"></script>
-        <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-        <script src="{{ url_for('static', filename='chessboardpage.js') }}"></script>
-        <label>Status:</label>
-        <div id="status"></div>
-        <label>FEN:</label>
-        <div id="fen"></div>
-        <label>PGN:</label>
-        <div id="pgn"></div>
-    </div>
-  {% endblock %}
+      .chessBoard{.
+      position: absolute;
+        left: -200px;
+        width: 700px;   
+        height: auto;
+        margin: 0 auto;
+        padding: 10px;
+        position: relative;
+      }
+
+      .button {
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+      .white {border: 1px solid black; background-color: white; color: black;} 
+      .black {border: none; background-color: black; color: white;}
+  </style>
+      <link rel="stylesheet" href="{{ url_for('static', filename='chessboard/css/chessboard-1.0.0.css') }}">
+      <div id="gameBoard" class="board">
+          <button type="button" class="button white" id="chooseWhite" onclick="setColor('white')">White</button>   
+          <button type="button" class="button black" id="chooseBlack" onclick="setColor('black')">Black</button>
+          <div id="whitePlayer"></div>  
+          <div id="blackPlayer"></div>  
+          <div id="gameover"></div>
+          <label id="winnerLabel"></label>
+          <div id="winnerDiv"></div>
+          <div class="chessBoard" id="myBoard"></div>
+          <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+          <script src="{{ url_for('static', filename='chessboard/js/chessboard-1.0.0.js') }}"></script>
+          <script src="{{ url_for('static', filename='chessboard/js/chess.js') }}"></script>
+          <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+          <script src="{{ url_for('static', filename='chessboardpage.js') }}"></script>
+      </div>
+{% endblock %}

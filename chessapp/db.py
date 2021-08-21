@@ -26,6 +26,10 @@ def init_db():
     db = get_db()
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+    db.execute(
+        'INSERT INTO chessboard (white, black) VALUES (?, ?)', ('Empty', 'Empty')
+    )
+    db.commit()
     
 @click.command('init-db')
 @with_appcontext
