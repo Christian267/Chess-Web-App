@@ -71,7 +71,8 @@ if (game.in_checkmate()) {
         gameAlreadyEnded = true;
         document.getElementById('gameover').innerHTML = status;
         document.getElementById('winnerLabel').innerHTML = 'Winner:';
-
+        winner = whitePlayer;
+        loser = blackPlayer;
         if (moveColor == 'White'){
             winner = blackPlayer;
             loser = whitePlayer;
