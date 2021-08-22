@@ -9,7 +9,12 @@ view = Blueprint('views', __name__)
 
 @view.route('/')
 def home():
-    return render_template('index.html')
+    if g.user is None:
+        return render_template('index.html')
+    
+    matchHistory = get_history(g.user['username'])
+    print(matchHistory)
+    return render_template('indexUserLoggedIn.html', **{'matchHistory': matchHistory})
 
 @view.route('/register', methods=('GET', 'POST'))
 def register():
@@ -95,10 +100,10 @@ def get_players():
 @view.route('/get_history')
 def get_history(username):
     db = get_db()
-    gamehistory = db.execute(
+    matchHistory = db.execute(
         'SELECT * from history WHERE winner = ? OR loser = ? ORDER BY created', (username, username)
     )
-    return gamehistory
+    return matchHistory
 
 @view.before_app_request
 def load_logged_in_user():
@@ -111,8 +116,3 @@ def load_logged_in_user():
             'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
-def setWhite():
-    print('White was Pressed!!!!!!!!')
-
-def setBlack():
-    print('Black was Pressed!!!!!!!!')

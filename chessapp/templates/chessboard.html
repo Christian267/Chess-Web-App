@@ -6,44 +6,114 @@
         position: relative;
         z-index: 1;
         margin: 0 auto 200px;
-        padding: 0px;
         width: 1200px;
+        height: 100vh;
         z-index: 1;
         text-align: center;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
       }
 
-      .chessBoard{.
-      position: absolute;
+      .chessBoard{
         left: -200px;
-        width: 700px;   
-        height: auto;
+        width: 700px;
+        top: -150px;
         margin: 0 auto;
         padding: 10px;
         position: relative;
+        vertical-align: top;
       }
 
       .button {
-        padding: 15px 32px;
+        padding: 15px 50px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         font-size: 16px;
         margin: 4px 2px;
+        vertical-align: top;
         cursor: pointer;
+
       }
-      .white {border: 1px solid black; background-color: white; color: black;} 
-      .black {border: none; background-color: black; color: white;}
+      .white {
+        border: 1px solid black;
+        background-color: white;
+        color: black;
+        left: 400px; 
+        top: 350px; 
+        height: auto;
+        margin: 0 auto;
+        position: relative;
+      }
+      .black {
+        border: none;
+        background-color: black;
+        color: white;
+        left: 253px; 
+        top: 550px; 
+        height: auto;
+        margin: 0 auto;
+        position: relative;
+        }
+
+      .whitePlayer{
+        font-family: 'Helvetica Neue', sans-serif;
+        font-weight: bold;
+        position: relative;
+        left: 290px;
+        top: 350px;
+      }
+
+      .blackPlayer{
+        font-family: 'Helvetica Neue', sans-serif;
+        font-weight: bold;
+        position: relative;
+        left: 290px;
+        top: 525px;
+      }
+
+      .gameOver{
+        position: relative;
+        color: white;
+        left: 360px;
+        top: 0px; 
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 25px;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+
+      .winnerText{
+        position: relative;
+        color: white;
+        left: 360px;
+        top: 30px; 
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 25px;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+      
+      .winnerName{
+        position: relative;
+        color: white;
+        left: 360px;
+        top: 30px; 
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 40px;
+        font-weight: bold;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
   </style>
       <link rel="stylesheet" href="{{ url_for('static', filename='chessboard/css/chessboard-1.0.0.css') }}">
       <div id="gameBoard" class="board">
           <button type="button" class="button white" id="chooseWhite" onclick="setColor('white')">White</button>   
           <button type="button" class="button black" id="chooseBlack" onclick="setColor('black')">Black</button>
-          <div id="whitePlayer">Empty</div>  
-          <div id="blackPlayer">Empty</div>  
-          <div id="gameover"></div>
-          <label id="winnerLabel"></label>
-          <div id="winnerDiv"></div>
+          <div id="whitePlayer" class='whitePlayer'>Empty</div>  
+          <div id="blackPlayer" class='blackPlayer'>Empty</div>  
+          <div id="gameOver" class="gameOver">.</div>
+          <label id="winnerText" class="winnerText">.</label>
+          <div id="winnerName" class="winnerName">.</div>
           <div class="chessBoard" id="myBoard"></div>
           <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
           <script src="{{ url_for('static', filename='chessboard/js/chessboard-1.0.0.js') }}"></script>

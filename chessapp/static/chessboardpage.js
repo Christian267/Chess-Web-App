@@ -69,8 +69,10 @@ if (game.in_checkmate()) {
     status = 'Game over, ' + moveColor + ' is in checkmate.';
     if (gameAlreadyEnded == false){
         gameAlreadyEnded = true;
-        document.getElementById('gameover').innerHTML = status;
-        document.getElementById('winnerLabel').innerHTML = 'Winner:';
+        document.getElementById('gameOver').innerHTML = status;
+        document.getElementById('gameOver').style.color = 'black';
+        document.getElementById('winnerText').innerHTML = 'Winner:';
+        document.getElementById('winnerText').style.color = 'black';
         winner = whitePlayer;
         loser = blackPlayer;
         if (moveColor == 'White'){
@@ -78,7 +80,8 @@ if (game.in_checkmate()) {
             loser = whitePlayer;
         }
         console.log('game has ended!')
-        document.getElementById('winnerDiv').innerHTML = winner;
+        document.getElementById('winnerName').innerHTML = winner;
+        document.getElementById('winnerName').style.color = 'black';
         var results = {
             winner: winner,
             loser: loser
@@ -104,6 +107,51 @@ else {
 }
 }
 
+function updateStatusNoEmitOnGameEnd () {
+    var status = '';
+    
+    var moveColor = 'White';
+    if (game.turn() === 'b') {
+        moveColor = 'Black';
+    }
+    
+    // checkmate
+    if (game.in_checkmate()) {
+        status = 'Game over, ' + moveColor + ' is in checkmate.';
+        if (gameAlreadyEnded == false){
+            gameAlreadyEnded = true;
+            document.getElementById('gameOver').innerHTML = status;
+            document.getElementById('gameOver').style.color = 'black';
+            document.getElementById('winnerText').innerHTML = 'Winner:';
+            document.getElementById('winnerText').style.color = 'black';
+            winner = whitePlayer;
+            loser = blackPlayer;
+            if (moveColor == 'White'){
+                winner = blackPlayer;
+                loser = whitePlayer;
+            }
+            console.log('game has ended!')
+            document.getElementById('winnerName').innerHTML = winner;
+            document.getElementById('winnerName').style.color = 'black';
+        }
+    
+    }
+    
+    // draw
+    else if (game.in_draw()) {
+        status = 'Game over, drawn position';
+    }
+    
+    // game still on
+    else {
+        status = moveColor + ' to move';
+    
+        // check?
+        if (game.in_check()) {
+        status += ', ' + moveColor + ' is in check';
+        }
+    }
+    }
 // Server communication
 
 async function load_username() {
@@ -126,6 +174,7 @@ async function load_players() {
         });
 }
 
+
 function setColor(color){
     var playerAndColor = {
         color: color,
@@ -135,14 +184,6 @@ function setColor(color){
     socket.emit('set color', playerAndColor);
 }
 
-// function setBlack(){
-//     var playerAndColor = {
-//         color: 'black',
-//         name: username
-//     }
-
-//     socket.emit('set color', playerAndColor);
-// }
 
 socket.on('set player colors', function (playerColors) {
     whitePlayer = playerColors['white'];
@@ -151,22 +192,16 @@ socket.on('set player colors', function (playerColors) {
     document.getElementById('blackPlayer').innerHTML = blackPlayer;
 });
 
+socket.on('reset board', function () {
+    whitePlayer = 'Empty'
+    blackPlayer = 'Empty'
+})
+
 socket.on('connect', async function() {
     username = await load_username();
     if (username != ''){
         console.log(username + ' has joined the server!');
-        // players = load_players();
-        // if (firstConnect == false){
-        //     firstConnect == true
-        //     whitePlayer = username
-        // }   
-        // else{
-        //     if (secondConnect == false){
-        //         secondConnect =
-        //         BlackPlayer = username
 
-        //     }
-        // }
     }
 });
 
@@ -174,5 +209,5 @@ socket.on('connect', async function() {
 socket.on("chess move", function(move) {
     game.move(move);
     board.position(game.fen());
-    updateStatus();
+    updateStatusNoEmitOnGameEnd();
 });

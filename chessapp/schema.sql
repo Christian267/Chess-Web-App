@@ -18,6 +18,9 @@ CREATE TABLE history (
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     winner TEXT NOT NULL,
     loser TEXT NOT NULL,
+    winnerElo INTEGER,
+    loserElo INTEGER,
+    eloChange INTEGER,
     FOREIGN KEY (winner) REFERENCES user (id),
     FOREIGN KEY (loser) REFERENCES user (id)
 );

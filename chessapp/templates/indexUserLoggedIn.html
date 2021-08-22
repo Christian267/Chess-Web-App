@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+
+{% block content %}
+<style>
+    .greenBackground{
+        background-color: hsl(121, 100%, 95%);
+        border-width: 2px;
+        border-style: solid;
+        border-color: hsl(120, 100%, 40%);
+        border-radius: 4px;
+
+    }
+
+    .redBackground{
+        background-color: hsl(0, 100%, 95%);
+        border-width: 2px;
+        border-style: solid;
+        border-color: hsl(0, 95%, 45%);
+        border-radius: 4px;
+    }
+</style>
+<div class="row position" style="padding-top:10px;">
+    <div class="col"><hr></div>
+    <div class="col-auto"><p class="h3" align="center">Current Elo rating: {{g.user["elo"]}}</p></div>
+    <div class="col"><hr></div>
+</div>
+<div class="row position" style="padding-top:50px;">
+    <div class="col"><p class="h3" align="center">Match History</p></div>
+</div>
+<div class="container" align="center">
+    <div class="overflow-auto" class="msgs" id="matchHistory" style="overflow-y: scroll; height:600px; width:600px;">
+        {% for match in matchHistory %}
+            {% if g.user["username"] == match["winner"] %}
+                <div class="container darker greenBackground">
+                    <b style="color:#000">{{match["winner"]}} ({{match["winnerElo"]}}) vs {{match["loser"]}} ({{match["loserElo"]}})</b>
+                        <p style="font-weight: bold; font-size: 20px; color: green;">VICTORY (+{{match["eloChange"]}})</p>
+                    <span class="time-left">Played On: {{match["created"]}}</span>
+                </div>
+            {% else %}
+            <div class="container darker redBackground">
+                <b style="color:#000; margin: auto;">{{match["winner"]}} ({{match["winnerElo"]}}) vs {{match["loser"]}} ({{match["loserElo"]}})</b>
+                <p style="font-weight: bold; font-size: 20px; color: red;">DEFEAT (-{{match["eloChange"]}})</p>
+                <span class="time-left">Played On: {{match["created"]}}</span>
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
