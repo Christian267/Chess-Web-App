@@ -179,12 +179,12 @@ function setColor(color){
     var playerAndColor = {
         color: color,
         name: username
-    }
+    };
 
     socket.emit('set color', playerAndColor);
 }
 
-
+socket.emit('set color', null);
 socket.on('set player colors', function (playerColors) {
     whitePlayer = playerColors['white'];
     blackPlayer = playerColors['black'];
@@ -193,8 +193,8 @@ socket.on('set player colors', function (playerColors) {
 });
 
 socket.on('reset board', function () {
-    whitePlayer = 'Empty'
-    blackPlayer = 'Empty'
+    whitePlayer = 'Empty';
+    blackPlayer = 'Empty';
 })
 
 socket.on('connect', async function() {
