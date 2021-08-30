@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+   <article class="leaderboard">
+        <header>
+            <div class="row position" style="padding-top:10px;">
+                <div class="col"><hr></div>
+                <div class="col-auto"><p class="h3" align="center">Current Elo Rating: {{g.user["elo"]}}</p></div>
+                <div class="col"><hr></div>
+            </div>
+            <div class="row position" style="padding-top:20px;">
+                <div class="col"><p class="h3" align="center">Match History</p></div>
+    
+        </header>
+
+        <main class="leaderboard__profiles">
+            {% for match in matchHistory %}
+                {% if g.user["username"] == match["winner"] %}
+                    <article class="leaderboard__profile profile__victory">
+                        <span class="leaderboard__name">{{match["winner"]}} ({{match["winnerElo"]}}) vs {{match["loser"]}} ({{match["loserElo"]}})</span>
+                        <span class="leaderboard__name time__played">Played On: {{match["created"]}}</span>
+                        <span class="leaderboard__value value__victory">VICTORY (+{{match["eloChange"]}})<span></span></span>
+                    </article>
+                {% else %}
+                    <article class="leaderboard__profile profile__defeat">
+                        <span class="leaderboard__name">{{match["loser"]}} ({{match["loserElo"]}}) vs {{match["winner"]}} ({{match["winnerElo"]}})</span>
+                        <span class="leaderboard__name time__played">Played On: {{match["created"]}}</span>
+                        <span class="leaderboard__value value__defeat">DEFEAT (-{{match["eloChange"]}})<span></span></span>
+                    </article>
+                {% endif %}
+            {% endfor %}
+        </main>
+    </article> 
+{% endblock %}

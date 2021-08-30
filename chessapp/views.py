@@ -11,10 +11,13 @@ view = Blueprint('views', __name__)
 def home():
     if g.user is None:
         return render_template('index.html')
-    
+    return redirect(url_for('views.dashboard'))
+
+@view.route('/dashboard')
+def dashboard():
     matchHistory = get_history(g.user['username'])
     print(matchHistory)
-    return render_template('indexUserLoggedIn.html', **{'matchHistory': matchHistory})
+    return render_template('dashboard.html', **{'matchHistory': matchHistory})
 
 @view.route('/register', methods=('GET', 'POST'))
 def register():
@@ -69,12 +72,18 @@ def logout():
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        flash('Login before entering a chess match')  
         if g.user is None:
             return redirect(url_for('views.login'))
 
         return view(**kwargs)
-
     return wrapped_view
+
+@view.route('/leaderboard')
+def leaderboard():
+    users = get_users()
+    print(users)
+    return render_template('leaderboard.html', **{'users': users})
 
 @view.route('/chessboard')
 @login_required
@@ -101,9 +110,17 @@ def get_players():
 def get_history(username):
     db = get_db()
     matchHistory = db.execute(
-        'SELECT * from history WHERE winner = ? OR loser = ? ORDER BY created', (username, username)
+        'SELECT * FROM history WHERE winner = ? OR loser = ? ORDER BY created', (username, username)
     )
     return matchHistory
+
+@view.route('/get_users')
+def get_users():
+    db = get_db()
+    users = db.execute(
+        'SELECT * FROM user ORDER BY elo DESC'
+    )
+    return users
 
 @view.before_app_request
 def load_logged_in_user():

@@ -3,6 +3,7 @@ from chessapp import create_app
 from chessapp.db import get_db
 from flask_socketio import SocketIO, emit
 import config
+import os
 
 app = create_app()
 socketio = SocketIO(app)
@@ -15,15 +16,17 @@ def handle_connection():
 @socketio.on('set color')
 def handle_set_color(playerColor):
      """
+     Handles updating the player color tag on the chessboard page and communicating to all clients.
      :param playerColor: dict
      """
      # playerColor = json.loads(color)
-     db = get_db()
-     dbColor = playerColor['color']
-     db.execute(
-          f'UPDATE chessboard SET {dbColor} = ? WHERE id = 1', (playerColor['name'],)
-     )
-     db.commit()
+     if playerColor:
+          db = get_db()
+          dbColor = playerColor['color']
+          db.execute(
+               f'UPDATE chessboard SET {dbColor} = ? WHERE id = 1', (playerColor['name'],)
+          )
+          db.commit()
      whitePlayer = getPlayer('white')
      blackPlayer = getPlayer('black')
 
@@ -36,6 +39,11 @@ def handle_chess_move(move):
 
 @socketio.on('game end')
 def handle_game_end(results):
+     """
+     Once a chess game concludes, this method updates user elo, adds the match the match history table,
+     and resets the players on the board
+     :param results: dict
+     """
      db = get_db()
      winner = results['winner']
      loser = results['loser']
@@ -85,6 +93,14 @@ def resetChessBoard():
      )
 
 def calculateEloChange(winnerElo, loserElo):
+     """
+     Once a match is over, calculate and return elo changes to update the database.
+     :param winnerElo: int
+     :param loserElo: int
+     :return winnerElo: int
+     :return loserElo: int
+     :return eloChange: int
+     """
      expectedWinner = 1 / (1 + 10 ** ((loserElo - winnerElo)/400))
      expectedLoser = 1 - expectedWinner
      eloChange = round(50 * (1 - expectedWinner))
