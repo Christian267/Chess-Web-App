@@ -6,7 +6,13 @@
   border-radius: 6px 6px 0 0;
   overflow: hidden;
 }
-  
+
+.leaderboard_title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
 .leaderboard__profiles {
   background-color: #fff;
   border-radius: 0 0 12px 12px;

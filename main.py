@@ -16,7 +16,7 @@ def handle_connection():
 @socketio.on('set color')
 def handle_set_color(playerColor):
      """
-     Handles updating the player color tag on the chessboard page and communicating to all clients.
+     Handles updating the player color tag on the chessboard page.
      :param playerColor: dict
      """
      # playerColor = json.loads(color)
@@ -24,18 +24,21 @@ def handle_set_color(playerColor):
           db = get_db()
           dbColor = playerColor['color']
           db.execute(
-               f'UPDATE chessboard SET {dbColor} = ? WHERE id = 1', (playerColor['name'],)
+           f'''UPDATE chessboard SET {dbColor} = ? 
+               WHERE id = 1''', 
+               (playerColor['name'],)
           )
           db.commit()
-     whitePlayer = getPlayer('white')
-     blackPlayer = getPlayer('black')
+     white_player = get_player('white')
+     black_player = get_player('black')
 
-     players = {'white': whitePlayer, 'black': blackPlayer}
+     players = {'white': white_player, 'black': black_player}
      emit('set player colors', players, broadcast=True)
 
 @socketio.on('chess move')
-def handle_chess_move(move):
-     emit('chess move', move, broadcast=True, include_self=False)
+def handle_chess_move(json):
+     update_board_state(json['board_state'])
+     emit('chess move', json['move'], broadcast=True, include_self=False)
 
 @socketio.on('game end')
 def handle_game_end(results):
@@ -48,65 +51,95 @@ def handle_game_end(results):
      winner = results['winner']
      loser = results['loser']
      if winner != 'Empty' and loser != 'Empty' and winner != loser:
-          winnerElo = getElo(winner)
-          loserElo = getElo(loser)
-          eloChange = 0
-          winnerElo, loserElo, eloChange = calculateEloChange(winnerElo, loserElo)
-          addGameToHistory(winner, loser, winnerElo, loserElo, eloChange)
-          updateElo(winner, winnerElo)
-          updateElo(loser, loserElo)
-     resetChessBoard()
+          winner_elo = get_elo(winner)
+          loser_elo = get_elo(loser)
+          elo_change = 0
+          winner_elo, loser_elo, elo_change = calculate_elo_change(winner_elo, loser_elo)
+          add_game_to_history(winner, loser, winner_elo, loser_elo, elo_change)
+          update_elo(winner, winner_elo)
+          update_elo(loser, loser_elo)
+     reset_chessboard()
      db.commit()
 
 # Utilities
-def getPlayer(color):
+def get_player(color):
      db = get_db()
      return db.execute(
           f'SELECT {color} FROM chessboard'
      ).fetchone()[color]
 
-def getElo(username):
+def get_elo(username):
      db = get_db()
      return db.execute(
-               'SELECT elo FROM user WHERE username = ?', (username,)
+            '''SELECT elo 
+               FROM user 
+               WHERE username = ?''', 
+               (username,)
           ).fetchone()['elo']
 
-def updateElo(username, elo):
+def update_elo(username, elo):
      db = get_db()
      db.execute(
-          'UPDATE user SET elo = ? WHERE username = ?', (elo, username)
+       '''UPDATE user 
+          SET elo = ? 
+          WHERE username = ?''', 
+          (elo, username)
      )
 
-def addGameToHistory(winner, loser, winnerElo, loserElo, eloChange):
+def update_board_state(board_state):
      db = get_db()
      db.execute(
-          'INSERT INTO history (winner, loser, winnerElo, loserElo, eloChange) VALUES (?, ?, ?, ?, ?)', (winner, loser, winnerElo, loserElo, eloChange)
+          '''UPDATE chessboard
+             SET fen = ?
+             WHERE id = 1''',
+             (board_state,)
+     )
+     db.commit()
+
+def add_game_to_history(winner, loser, winner_elo, loser_elo, elo_change):
+     db = get_db()
+     db.execute(
+       '''INSERT INTO history (winner, loser, winnerElo, loserElo, eloChange) 
+          VALUES (?, ?, ?, ?, ?)''', 
+          (winner, loser, winner_elo, loser_elo, elo_change)
      )     
 
-def resetChessBoard():
+def reset_chessboard():
      db = get_db()
+     chess_starting_position = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
      db.execute(
-          'UPDATE chessboard SET white = ? WHERE id = 1', ('Empty',)
+       '''UPDATE chessboard 
+          SET white = ? 
+          WHERE id = 1''', 
+          ('Empty',)
      )
      db.execute(
-          'UPDATE chessboard SET black = ? WHERE id = 1', ('Empty',)
+       '''UPDATE chessboard 
+          SET black = ? 
+          WHERE id = 1''', 
+          ('Empty',)
+     )     
+     db.execute(
+       '''UPDATE chessboard 
+          SET fen = ? 
+          WHERE id = 1''', 
+          (chess_starting_position,)
      )
 
-def calculateEloChange(winnerElo, loserElo):
+def calculate_elo_change(winner_elo, loser_elo):
      """
      Once a match is over, calculate and return elo changes to update the database.
-     :param winnerElo: int
-     :param loserElo: int
-     :return winnerElo: int
-     :return loserElo: int
-     :return eloChange: int
+     :param winner_elo: int
+     :param loser_elo: int
+     :return winner_elo: int
+     :return loser_elo: int
+     :return elo_change: int
      """
-     expectedWinner = 1 / (1 + 10 ** ((loserElo - winnerElo)/400))
-     expectedLoser = 1 - expectedWinner
-     eloChange = round(50 * (1 - expectedWinner))
-     winnerElo = winnerElo + eloChange
-     loserElo = loserElo - eloChange
-     return winnerElo, loserElo, eloChange
+     odds_of_winning = 1 / (1 + 10 ** ((loser_elo - winner_elo)/400))
+     elo_change = round(50 * (1 - odds_of_winning))
+     winner_elo = winner_elo + elo_change
+     loser_elo = loser_elo - elo_change
+     return winner_elo, loser_elo, elo_change
 
 
 if __name__=='__main__':
