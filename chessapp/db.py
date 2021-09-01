@@ -26,11 +26,11 @@ def init_db():
     db = get_db()
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
-    chess_starting_position = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     db.execute(
      '''INSERT INTO chessboard (white, black, fen) 
         VALUES (?, ?, ?)''', 
-        ('Empty', 'Empty', chess_starting_position)
+        ('Empty', 'Empty', chess_starting_position_fen)
     )
     db.commit()
     

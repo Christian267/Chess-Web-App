@@ -14,9 +14,9 @@ def home():
 
 @view.route('/dashboard')
 def dashboard():
-    matchHistory = get_history(g.user['username'])
-    print(matchHistory)
-    return render_template('dashboard.html', **{'matchHistory': matchHistory})
+    match_history = get_history(g.user['username'])
+    print(match_history)
+    return render_template('dashboard.html', **{'match_history': match_history})
 
 @view.route('/register', methods=('GET', 'POST'))
 def register():
@@ -29,8 +29,8 @@ def register():
             error = 'Username is required.'
         elif db.execute(
          '''SELECT id 
-            FROM user 
-            WHERE username = ?''', (username,)
+            FROM   user 
+            WHERE  username = ?''', (username,)
         ).fetchone() is not None:
             error = f'User {username} is already registered.'
 
@@ -52,8 +52,8 @@ def login():
         error = None
         user = db.execute(
          '''SELECT * 
-            FROM user 
-            WHERE username = ?''', (username,)
+            FROM   user 
+            WHERE  username = ?''', (username,)
         ).fetchone()
 
         if user is None:
@@ -106,8 +106,8 @@ def get_players():
     db = get_db()
     players = db.execute(
      '''SELECT white AND black 
-        FROM chessboard 
-        WHERE id = 0'''
+        FROM   chessboard 
+        WHERE  id = 0'''
     )
     return players
 
@@ -117,8 +117,8 @@ def get_fen():
     data = {'board_position': ''}
     board_position = db.execute(
         '''SELECT fen
-           FROM chessboard
-           WHERE id = 1'''
+           FROM   chessboard
+           WHERE  id = 1'''
     ).fetchone()['fen']
     data['board_position'] = board_position
     return jsonify(data)
@@ -126,12 +126,28 @@ def get_fen():
 @view.route('/get_history')
 def get_history(username):
     db = get_db()
+    userID = db.execute(
+        '''SELECT id
+           FROM user
+           WHERE username = ?''',
+           (username,)
+    ).fetchone()['id']
     matchHistory = db.execute(
-     '''SELECT * 
-        FROM history
-        WHERE winner = ? OR loser = ? 
-        ORDER BY created DESC''',
-        (username, username)
+         '''SELECT winner.username   AS winner_username,
+                loser.username       AS loser_username,
+                winner.elo           AS winner_elo,
+                loser.elo            AS loser_elo,
+                history.elo_change   AS elo_change,
+                history.time_played  AS time_played
+            FROM   history 
+                INNER JOIN user AS winner
+                    ON history.winner_id=winner.id
+                INNER JOIN user AS loser
+                    ON history.loser_id=loser.id
+            WHERE winner.id=?
+                OR loser.id=?
+            ORDER BY time_played DESC''',
+            (userID, userID)
     )
     return matchHistory
 
@@ -145,15 +161,15 @@ def get_users():
     )
     return users
 
-@view.route('/resetBoard')
-def resetBoard():
+@view.route('/resetboard')
+def resetboard():
     db = get_db()
-    chess_starting_position = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     db.execute(
        '''UPDATE chessboard 
-          SET fen = ? 
-          WHERE id = 1''', 
-          (chess_starting_position,)
+          SET    fen = ? 
+          WHERE  id = 1''', 
+          (chess_starting_position_fen,)
     )
     db.commit()
     return redirect(url_for('views.home'))
@@ -167,8 +183,8 @@ def load_logged_in_user():
     else:
         g.user = get_db().execute(
          '''SELECT * 
-            FROM user 
-            WHERE id = ?''',
+            FROM   user 
+            WHERE  id = ?''',
             (user_id,)
         ).fetchone()
 

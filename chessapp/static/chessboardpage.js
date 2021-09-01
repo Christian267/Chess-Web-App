@@ -1,7 +1,7 @@
 var socket = io.connect("http://" + document.domain + ":" + location.port);
 var username = '';
-var whitePlayer = '';
-var blackPlayer = '';
+var white_player = '';
+var black_player = '';
 var fen = '';
 // chessboard
 
@@ -10,17 +10,17 @@ var game = new Chess();
 var $status = $('#status');
 var $fen = $('#fen');
 var $pgn = $('#pgn');
-var gameAlreadyEnded = false
-var winner = ''
-var loser = ''
+var gameAlreadyEnded = false;
+var winner = '';
+var loser = '';
 var config = {
 draggable: true,
 position: 'start',
 onDrop: onDrop,
 };
-board = Chessboard('myBoard', config);
+board = Chessboard('chessboard', config);
 board.position();
-updateStatus();
+updateStatus(false);
 
 function onDragStart (piece) {
     // do not pick up pieces if the game is over
@@ -35,13 +35,11 @@ function onDragStart (piece) {
 
 function onDrop (source, target) {
     // see if the move is legal
-    white = document.getElementById('whitePlayer').innerHTML;
-    black = document.getElementById('blackPlayer').innerHTML;
     // player trying to move out of turn
-    if (game.turn() === 'b' && username != black){
+    if (game.turn() === 'b' && username != black_player){
         return 'snapback'
     }
-    if ((game.turn() === 'w' && username != white)){
+    if ((game.turn() === 'w' && username != white_player)){
         return 'snapback'
     }
     var move = game.move({
@@ -59,7 +57,7 @@ function onDrop (source, target) {
 
     socket.emit('chess move', move_and_board);
     board.position(game.fen());
-    updateStatus();
+    updateStatus(false);
 }
 
 // update the board position after the piece snap
@@ -68,12 +66,18 @@ function onSnapEnd () {
     board.position(game.fen());
 }
 
-function updateStatus () {
+function updateStatus (update_from_server) {
     var status = '';
 
     var moveColor = 'White';
     if (game.turn() === 'b') {
         moveColor = 'Black';
+        document.getElementById('turn').innerHTML = 'Current Turn: Black';
+        document.getElementById('turn').style.color = 'black';
+    }
+    else {
+        document.getElementById('turn').innerHTML = 'Current Turn: White';
+        document.getElementById('turn').style.color = 'black';
     }
 
     // checkmate
@@ -81,24 +85,26 @@ function updateStatus () {
         status = 'Game over, ' + moveColor + ' is in checkmate.';
         if (gameAlreadyEnded == false){
             gameAlreadyEnded = true;
-            document.getElementById('gameOver').innerHTML = status;
-            document.getElementById('gameOver').style.color = 'black';
-            document.getElementById('winnerText').innerHTML = 'Winner:';
-            document.getElementById('winnerText').style.color = 'black';
-            winner = whitePlayer;
-            loser = blackPlayer;
+            document.getElementById('turn').style.color = 'white';
+            document.getElementById('game_over').innerHTML = status;
+            document.getElementById('game_over').style.color = 'black';
+            document.getElementById('winner_text').innerHTML = 'Winner:';
+            document.getElementById('winner_text').style.color = 'black';
+            winner = white_player;
+            loser = black_player;
             if (moveColor == 'White'){
-                winner = blackPlayer;
-                loser = whitePlayer;
+                winner = black_player;
+                loser = white_player;
             }
             console.log('game has ended!')
-            document.getElementById('winnerName').innerHTML = winner;
-            document.getElementById('winnerName').style.color = 'black';
+            document.getElementById('winner_name').innerHTML = winner;
+            document.getElementById('winner_name').style.color = 'black';
             var results = {
                 winner: winner,
                 loser: loser
             }
-            socket.emit('game end', results);
+            // ensure that only a single call to the database is performed, preventing duplicate rows in history table
+            if (update_from_server === false) socket.emit('game end', results);
         }
 
     }
@@ -112,52 +118,6 @@ function updateStatus () {
     else {
         status = moveColor + ' to move';
 
-        // check?
-        if (game.in_check()) {
-        status += ', ' + moveColor + ' is in check';
-        }
-    }
-}
-
-function updateStatusNoEmitOnGameEnd () {
-    var status = '';
-    
-    var moveColor = 'White';
-    if (game.turn() === 'b') {
-        moveColor = 'Black';
-    }
-    
-    // checkmate
-    if (game.in_checkmate()) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.';
-        if (gameAlreadyEnded == false){
-            gameAlreadyEnded = true;
-            document.getElementById('gameOver').innerHTML = status;
-            document.getElementById('gameOver').style.color = 'black';
-            document.getElementById('winnerText').innerHTML = 'Winner:';
-            document.getElementById('winnerText').style.color = 'black';
-            winner = whitePlayer;
-            loser = blackPlayer;
-            if (moveColor == 'White'){
-                winner = blackPlayer;
-                loser = whitePlayer;
-            }
-            console.log('game has ended!')
-            document.getElementById('winnerName').innerHTML = winner;
-            document.getElementById('winnerName').style.color = 'black';
-        }
-    
-    }
-    
-    // draw
-    else if (game.in_draw()) {
-        status = 'Game over, drawn position';
-    }
-    
-    // game still on
-    else {
-        status = moveColor + ' to move';
-    
         // check?
         if (game.in_check()) {
         status += ', ' + moveColor + ' is in check';
@@ -196,27 +156,27 @@ async function load_fen() {
         });
 }
 
-function setColor(color){
-    var playerAndColor = {
+function set_color(color){
+    var player_and_color = {
         color: color,
         name: username
     };
 
-    socket.emit('set color', playerAndColor);
+    socket.emit('set color', player_and_color);
 }
 
 socket.emit('set color', null);
-socket.on('set player colors', function (playerColors) {
-    whitePlayer = playerColors['white'];
-    blackPlayer = playerColors['black'];
-    document.getElementById('whitePlayer').innerHTML = whitePlayer;
-    document.getElementById('blackPlayer').innerHTML = blackPlayer;
+socket.on('set player colors', function (player_colors) {
+    white_player = player_colors['white'];
+    black_player = player_colors['black'];
+    document.getElementById('white_player').innerHTML = white_player;
+    document.getElementById('black_player').innerHTML = black_player;
 });
 
 socket.on('reset board', function () {
-    whitePlayer = 'Empty';
-    blackPlayer = 'Empty';
-})
+    white_player = 'Empty';
+    black_player = 'Empty';
+});
 
 socket.on('connect', async function() {
     username = await load_username();
@@ -232,5 +192,5 @@ socket.on('connect', async function() {
 socket.on("chess move", function(move) {
     game.move(move);
     board.position(game.fen());
-    updateStatusNoEmitOnGameEnd();
+    updateStatus(true);
 });

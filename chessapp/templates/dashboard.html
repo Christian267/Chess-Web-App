@@ -15,18 +15,18 @@
         </header>
 
         <main class="leaderboard__profiles">
-            {% for match in matchHistory %}
-                {% if g.user["username"] == match["winner"] %}
+            {% for match in match_history %}
+                {% if g.user["username"] == match["winner_username"] %}
                     <article class="leaderboard__profile profile__victory">
-                        <span class="leaderboard__name">{{match["winner"]}} ({{match["winnerElo"]}}) vs {{match["loser"]}} ({{match["loserElo"]}})</span>
-                        <span class="leaderboard__name time__played">Played On: {{match["created"]}}</span>
-                        <span class="leaderboard__value value__victory">VICTORY (+{{match["eloChange"]}})<span></span></span>
+                        <span class="leaderboard__name">{{match["winner_username"]}} ({{match["winner_elo"]}}) vs {{match["loser_username"]}} ({{match["loser_elo"]}})</span>
+                        <span class="leaderboard__name time__played">Played On: {{match["time_played"]}}</span>
+                        <span class="leaderboard__value value__victory">VICTORY (+{{match["elo_change"]}})<span></span></span>
                     </article>
                 {% else %}
                     <article class="leaderboard__profile profile__defeat">
-                        <span class="leaderboard__name">{{match["loser"]}} ({{match["loserElo"]}}) vs {{match["winner"]}} ({{match["winnerElo"]}})</span>
-                        <span class="leaderboard__name time__played">Played On: {{match["created"]}}</span>
-                        <span class="leaderboard__value value__defeat">DEFEAT (-{{match["eloChange"]}})<span></span></span>
+                        <span class="leaderboard__name">{{match["loser_username"]}} ({{match["loser_elo"]}}) vs {{match["winner_username"]}} ({{match["winner_elo"]}})</span>
+                        <span class="leaderboard__name time__played">Played On: {{match["time_played"]}}</span>
+                        <span class="leaderboard__value value__defeat">DEFEAT (-{{match["elo_change"]}})<span></span></span>
                     </article>
                 {% endif %}
             {% endfor %}

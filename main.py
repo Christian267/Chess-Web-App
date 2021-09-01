@@ -3,11 +3,9 @@ from chessapp import create_app
 from chessapp.db import get_db
 from flask_socketio import SocketIO, emit
 import config
-import os
 
 app = create_app()
 socketio = SocketIO(app)
-hasRun = False
 
 @socketio.on('connect')
 def handle_connection():
@@ -24,8 +22,9 @@ def handle_set_color(playerColor):
           db = get_db()
           dbColor = playerColor['color']
           db.execute(
-           f'''UPDATE chessboard SET {dbColor} = ? 
-               WHERE id = 1''', 
+           f'''UPDATE chessboard 
+               SET    {dbColor} = ?
+               WHERE  id = 1''',
                (playerColor['name'],)
           )
           db.commit()
@@ -51,13 +50,14 @@ def handle_game_end(results):
      winner = results['winner']
      loser = results['loser']
      if winner != 'Empty' and loser != 'Empty' and winner != loser:
-          winner_elo = get_elo(winner)
-          loser_elo = get_elo(loser)
-          elo_change = 0
+          winner_id = get_user_id(winner)
+          loser_id = get_user_id(loser)
+          winner_elo = get_elo(winner_id)
+          loser_elo = get_elo(loser_id)
           winner_elo, loser_elo, elo_change = calculate_elo_change(winner_elo, loser_elo)
-          add_game_to_history(winner, loser, winner_elo, loser_elo, elo_change)
-          update_elo(winner, winner_elo)
-          update_elo(loser, loser_elo)
+          add_game_to_history(winner_id, loser_id, elo_change)
+          update_elo(winner_id,  winner_elo)
+          update_elo(loser_id, loser_elo)
      reset_chessboard()
      db.commit()
 
@@ -65,65 +65,75 @@ def handle_game_end(results):
 def get_player(color):
      db = get_db()
      return db.execute(
-          f'SELECT {color} FROM chessboard'
+          f'''SELECT {color} 
+            FROM   chessboard'''
      ).fetchone()[color]
 
-def get_elo(username):
+def get_elo(user_id):
      db = get_db()
      return db.execute(
             '''SELECT elo 
-               FROM user 
-               WHERE username = ?''', 
-               (username,)
+               FROM   user 
+               WHERE  id = ?''', 
+               (user_id,)
           ).fetchone()['elo']
 
-def update_elo(username, elo):
+def get_user_id(username):
+     db = get_db()
+     return db.execute(
+          '''SELECT id
+             FROM   user
+             WHERE username = ?''',
+             (username,)
+     ).fetchone()['id']
+
+def update_elo(user_id, elo):
      db = get_db()
      db.execute(
        '''UPDATE user 
-          SET elo = ? 
-          WHERE username = ?''', 
-          (elo, username)
+          SET    elo = ? 
+          WHERE  id = ?''', 
+          (elo, user_id)
      )
 
 def update_board_state(board_state):
      db = get_db()
      db.execute(
           '''UPDATE chessboard
-             SET fen = ?
-             WHERE id = 1''',
+             SET    fen = ?
+             WHERE  id = 1''',
              (board_state,)
      )
      db.commit()
 
-def add_game_to_history(winner, loser, winner_elo, loser_elo, elo_change):
+def add_game_to_history(winner_id, loser_id, elo_change):
      db = get_db()
      db.execute(
-       '''INSERT INTO history (winner, loser, winnerElo, loserElo, eloChange) 
-          VALUES (?, ?, ?, ?, ?)''', 
-          (winner, loser, winner_elo, loser_elo, elo_change)
+       '''INSERT INTO history (winner_id, loser_id, elo_change) 
+          VALUES (?, ?, ?)''', 
+          (winner_id, loser_id, elo_change)
      )     
 
 def reset_chessboard():
      db = get_db()
-     chess_starting_position = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+     chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
      db.execute(
        '''UPDATE chessboard 
-          SET white = ? 
-          WHERE id = 1''', 
+          SET    white = ? 
+          WHERE  id = 1''', 
           ('Empty',)
      )
      db.execute(
        '''UPDATE chessboard 
-          SET black = ? 
-          WHERE id = 1''', 
+          SET    black = ? 
+          WHERE  id = 1''', 
           ('Empty',)
      )     
      db.execute(
        '''UPDATE chessboard 
-          SET fen = ? 
-          WHERE id = 1''', 
-          (chess_starting_position,)
+          SET    fen = ? 
+          WHERE  id = 1''', 
+          (chess_starting_position_fen,)
      )
 
 def calculate_elo_change(winner_elo, loser_elo):

@@ -16,12 +16,10 @@ CREATE TABLE chessboard (
 );
 CREATE TABLE history (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    winner TEXT NOT NULL,
-    loser TEXT NOT NULL,
-    winnerElo INTEGER NOT NULL,
-    loserElo INTEGER NOT NULL,
-    eloChange INTEGER NOT NULL,
-    FOREIGN KEY (winner) REFERENCES user (username),
-    FOREIGN KEY (loser) REFERENCES user (username)
+    time_played TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    winner_id INTEGER NOT NULL,
+    loser_id INTEGER NOT NULL,
+    elo_change INTEGER NOT NULL,
+    FOREIGN KEY (winner_id) REFERENCES user(id),
+    FOREIGN KEY (loser_id) REFERENCES user(id)
 );

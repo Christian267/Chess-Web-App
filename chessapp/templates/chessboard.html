@@ -13,14 +13,15 @@
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
       }
 
-      .chessBoard{
+      .chessboard{
         left: -200px;
         width: 700px;
-        top: -150px;
+        top: -200px;
         margin: 0 auto;
         padding: 10px;
         position: relative;
         vertical-align: top;
+        z-index: 1000;
       }
 
       .button {
@@ -57,23 +58,25 @@
         position: relative;
         }
 
-      .whitePlayer{
+      .white_player{
         font-family: 'Helvetica Neue', sans-serif;
         font-weight: bold;
+        font-size: 25px;
         position: relative;
-        left: 282px;
-        top: 350px;
+        left: 320px;
+        top: 330px;
       }
 
-      .blackPlayer{
+      .black_player{
         font-family: 'Helvetica Neue', sans-serif;
         font-weight: bold;
+        font-size: 25px;
         position: relative;
-        left: 282px;
-        top: 525px;
+        left: 320px;
+        top: 490px;
       }
 
-      .gameOver{
+      .game_over{
         position: relative;
         color: white;
         left: 360px;
@@ -84,7 +87,7 @@
         line-height: 1;
       }
 
-      .winnerText{
+      .winner_text{
         position: relative;
         color: white;
         left: 360px;
@@ -95,7 +98,7 @@
         line-height: 1;
       }
       
-      .winnerName{
+      .winner_name{
         position: relative;
         color: white;
         left: 360px;
@@ -106,17 +109,29 @@
         letter-spacing: -1px;
         line-height: 1;
       }
+
+      .turn{
+        position: relative;
+        left: 300px;
+        top: 0px; 
+        font-family: 'Helvetica Neue', sans-serif;
+        font-size: 25px;
+        font-weight: 600;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
   </style>
       <link rel="stylesheet" href="{{ url_for('static', filename='chessboard/css/chessboard-1.0.0.css') }}">
       <div id="gameBoard" class="board">
-          <button type="button" class="button white" id="chooseWhite" onclick="setColor('white')">White</button>   
-          <button type="button" class="button black" id="chooseBlack" onclick="setColor('black')">Black</button>
-          <div id="whitePlayer" class='whitePlayer'>Empty</div>  
-          <div id="blackPlayer" class='blackPlayer'>Empty</div>  
-          <div id="gameOver" class="gameOver">.</div>
-          <label id="winnerText" class="winnerText">.</label>
-          <div id="winnerName" class="winnerName">.</div>
-          <div class="chessBoard" id="myBoard"></div>
+          <button type="button" class="button white" id="choose_white" onclick="set_color('white')">White</button>   
+          <button type="button" class="button black" id="choose_black" onclick="set_color('black')">Black</button>
+          <div id="turn" class="turn">Current Turn: White</div>  
+          <div id="white_player" class="white_player">Empty</div>  
+          <div id="black_player" class="black_player">Empty</div>  
+          <div id="game_over" class="game_over">.</div>
+          <label id="winner_text" class="winner_text">.</label>
+          <div id="winner_name" class="winner_name">.</div>
+          <div class="chessboard" id="chessboard"></div>
           <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
           <script src="{{ url_for('static', filename='chessboard/js/chessboard-1.0.0.js') }}"></script>
           <script src="{{ url_for('static', filename='chessboard/js/chess.js') }}"></script>

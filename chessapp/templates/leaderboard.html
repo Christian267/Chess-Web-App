@@ -8,6 +8,11 @@
             <h1 class="leaderboard__title"><span class="leaderboard__title">Chess Leaderboard</span></h1>
         </header>
         <main class="leaderboard__profiles">
+            <article class="leaderboard__label">
+                <span class="label__name">Rank</span>
+                <span class="label__name">Player</span>
+                <span class="label__value">Rating</span>
+            </article>
             {% for user in users %}
                     <article class="leaderboard__profile">
                         <span class="leaderboard__name">{{loop.index}}</span>
