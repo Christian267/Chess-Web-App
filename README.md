@@ -93,7 +93,27 @@ The required python packages to run this application are found in requirements.t
    ```sh
    pip install requirements.txt
    ```
-4. Run the Flask application and copy/paste the url into your browser
+4. Initialize the database
+   ```sh
+   BASH
+   $ export FLASK_APP=chessapp
+   $ export FLASK_ENV=development
+   $ flask run
+   ```
+   CMD
+   ```sh
+   > set FLASK_APP=chessapp
+   > set FLASK_ENV=development
+   > flask run
+   ```
+   Powershell
+   ```sh
+   > $env:FLASK_APP = "flaskr"
+   > $env:FLASK_ENV = "development"
+   > flask run
+   ```
+  
+5. Run the Flask application and copy/paste the url into your browser
    ```sh
    python3 main.py
    ```
