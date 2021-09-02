@@ -49,15 +49,15 @@
 ### Features
   <h3 align="center">Play live chess games with your friends!</h3>
 <p align="center">
-  <img src=".\images\chess_demo.gif" width=550>
+  <img src="https://i.imgur.com/71wzisY.gif" width=550>
 </p>
   <h3 align="center">View and climb the leaderboards!</h3>
 <p align="center">
-  <img src=".\images\leaderboard.png" width=400>
+  <img src="https://i.imgur.com/f3a2VyF.png" width=400>
 </p>
   <h3 align="center">Review your performance through your personal match history</h3>
 <p align="center">
-  <img src=".\images\match_history.png" width=400>
+  <img src="https://i.imgur.com/Cnabirc.png" width=400>
 </p>
 
 
@@ -97,23 +97,20 @@ The required python packages to run this application are found in requirements.t
    ```sh
    BASH
    $ export FLASK_APP=chessapp
-   $ export FLASK_ENV=development
    $ flask run
    ```
    CMD
    ```sh
    > set FLASK_APP=chessapp
-   > set FLASK_ENV=development
    > flask run
    ```
    Powershell
    ```sh
    > $env:FLASK_APP = "flaskr"
-   > $env:FLASK_ENV = "development"
    > flask run
    ```
   
-5. Run the Flask application and copy/paste the url into your browser
+5. Run the Flask application and copy/paste the resulting url into your browser
    ```sh
    python3 main.py
    ```
