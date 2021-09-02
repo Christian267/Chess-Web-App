@@ -133,13 +133,13 @@ def get_history(username):
            (username,)
     ).fetchone()['id']
     matchHistory = db.execute(
-         '''SELECT winner.username     AS winner_username,
-                   loser.username      AS loser_username,
-                   winner.elo          AS winner_elo,
-                   loser.elo           AS loser_elo,
-                   history.elo_change  AS elo_change,
-                   history.time_played AS time_played
-            FROM history 
+         '''SELECT winner.username   AS winner_username,
+                loser.username       AS loser_username,
+                winner.elo           AS winner_elo,
+                loser.elo            AS loser_elo,
+                history.elo_change   AS elo_change,
+                history.time_played  AS time_played
+            FROM   history 
                 INNER JOIN user AS winner
                     ON history.winner_id=winner.id
                 INNER JOIN user AS loser

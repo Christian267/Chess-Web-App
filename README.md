@@ -83,7 +83,7 @@ The required python packages to run this application are found in requirements.t
    ```sh
    git clone https://github.com/Christian267/Chess-Web-App
    ```
-2. Create and activate a virtual environment
+2. Create a and activate a virtual environment
    ```sh
    python3 -m venv venv
 
@@ -97,17 +97,20 @@ The required python packages to run this application are found in requirements.t
    ```sh
    BASH
    $ export FLASK_APP=chessapp
-   $ flask init-db
+   $ export FLASK_ENV=development
+   $ flask run
    ```
    CMD
    ```sh
    > set FLASK_APP=chessapp
-   > flask init-db
+   > set FLASK_ENV=development
+   > flask run
    ```
    Powershell
    ```sh
    > $env:FLASK_APP = "flaskr"
-   > flask init-db
+   > $env:FLASK_ENV = "development"
+   > flask run
    ```
   
 5. Run the Flask application and copy/paste the url into your browser
