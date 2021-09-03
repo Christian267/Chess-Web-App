@@ -12,6 +12,5 @@ class Config:
     FLASK_DEBUG = os.getenv('FLASK_DEBUG')
     SECRET_KEY = os.getenv('SECRET_KEY')
     SERVER = os.getenv('SERVER')
-    DATABASE = os.path.join(os.getcwd(), 'instance', 'chessapp.sqlite')
 
     TEMPLATES_AUTO_RELOAD=True

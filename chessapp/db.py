@@ -1,17 +1,17 @@
 import sqlite3
-
+import psycopg2, psycopg2.extras
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
-
+import os
 
 def get_db():
     if 'db' not in g:
-        g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
-            detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
+        g.db = psycopg2.connect(
+            host=os.getenv('DBHOST'),
+            database=os.getenv('DBNAME'),
+            user=os.getenv('DBUSER'),
+            cursor_factory=psycopg2.extras.DictCursor)
 
     return g.db
 
@@ -24,15 +24,15 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
-    with current_app.open_resource('schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
-    chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-    db.execute(
-     '''INSERT INTO chessboard (white, black, fen) 
-        VALUES (?, ?, ?)''', 
-        ('Empty', 'Empty', chess_starting_position_fen)
-    )
-    db.commit()
+    with db.cursor() as cursor:
+        cursor.execute(open('chessapp/schema.sql', 'r').read())
+        chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+        cursor.execute(
+        '''INSERT INTO chessboard (white, black, fen) 
+            VALUES (%s, %s, %s)''', 
+            ('Empty', 'Empty', chess_starting_position_fen)
+        )
+        db.commit()
     
 @click.command('init-db')
 @with_appcontext
