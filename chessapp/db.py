@@ -1,4 +1,4 @@
-import sqlite3
+
 import psycopg2, psycopg2.extras
 import click
 from flask import current_app, g

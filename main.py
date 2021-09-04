@@ -15,19 +15,10 @@ def handle_connection():
 def handle_set_color(playerColor):
      """
      Handles updating the player color tag on the chessboard page.
-     :param playerColor: dict
+     :param playerColor: dict{'color': str, 'name': str}
      """
-     # playerColor = json.loads(color)
      if playerColor:
-          db = get_db()
-          dbColor = playerColor['color']
-          db.execute(
-           f'''UPDATE chessboard 
-               SET    {dbColor} = ?
-               WHERE  id = 1''',
-               (playerColor['name'],)
-          )
-          db.commit()
+          update_player_color(playerColor['color'], playerColor['name'])
      white_player = get_player('white')
      black_player = get_player('black')
 
@@ -44,7 +35,7 @@ def handle_game_end(results):
      """
      Once a chess game concludes, this method updates user elo, adds the match the match history table,
      and resets the players on the board
-     :param results: dict
+     :param results: dict{'winner': str, 'loser': str}
      """
      db = get_db()
      winner = results['winner']
@@ -59,82 +50,110 @@ def handle_game_end(results):
           update_elo(winner_id,  winner_elo)
           update_elo(loser_id, loser_elo)
      reset_chessboard()
-     db.commit()
+     
 
 # Utilities
+def update_player_color(player_color=None, player_name=None):
+     """
+     
+     """
+     if player_color is None or player_name is None:
+          return
+     db = get_db()
+     with db.cursor() as cursor:
+          cursor.execute(
+               f'''UPDATE chessboard
+                   SET    {player_color} = %s
+                   WHERE id = 1''',
+                   (player_name,)
+          )
+     db.commit()
+
 def get_player(color):
      db = get_db()
-     return db.execute(
-          f'''SELECT {color} 
-            FROM   chessboard'''
-     ).fetchone()[color]
+     with db.cursor() as cursor:
+          cursor.execute(
+               f'''SELECT {color} 
+                   FROM   chessboard'''
+          )
+          return cursor.fetchone()[color]
 
 def get_elo(user_id):
      db = get_db()
-     return db.execute(
-            '''SELECT elo 
-               FROM   user 
-               WHERE  id = ?''', 
-               (user_id,)
-          ).fetchone()['elo']
-
+     with db.cursor() as cursor:
+          cursor.execute(
+               '''SELECT elo 
+                  FROM   user 
+                  WHERE  id = %s''', 
+                  (user_id,)
+               )
+          return cursor.fetchone()['elo']
 def get_user_id(username):
      db = get_db()
-     return db.execute(
+     with db.cursor() as cursor:
+          cursor.execute(
           '''SELECT id
              FROM   user
-             WHERE username = ?''',
+             WHERE username = %s''',
              (username,)
-     ).fetchone()['id']
+          )
+          return cursor.fetchone()['id']
+     
 
 def update_elo(user_id, elo):
      db = get_db()
-     db.execute(
-       '''UPDATE user 
-          SET    elo = ? 
-          WHERE  id = ?''', 
-          (elo, user_id)
-     )
+     with db.cursor() as cursor:
+          cursor.execute(
+          '''UPDATE user 
+             SET    elo = %s 
+             WHERE  id = %s''', 
+             (elo, user_id)
+          )
+     db.commit()
 
 def update_board_state(board_state):
      db = get_db()
-     db.execute(
-          '''UPDATE chessboard
-             SET    fen = ?
-             WHERE  id = 1''',
-             (board_state,)
-     )
+     with db.cursor() as cursor:
+          cursor.execute(
+               '''UPDATE chessboard
+                  SET    fen = %s
+                  WHERE  id = 1''',
+                  (board_state,)
+          )
      db.commit()
 
 def add_game_to_history(winner_id, loser_id, elo_change):
      db = get_db()
-     db.execute(
-       '''INSERT INTO history (winner_id, loser_id, elo_change) 
-          VALUES (?, ?, ?)''', 
-          (winner_id, loser_id, elo_change)
-     )     
-
+     with db.cursor() as cursor:
+          cursor.execute(
+          '''INSERT INTO history (winner_id, loser_id, elo_change) 
+             VALUES (%s, %s, %s)''', 
+             (winner_id, loser_id, elo_change)
+          )     
+     db.commit()
 def reset_chessboard():
      db = get_db()
      chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-     db.execute(
-       '''UPDATE chessboard 
-          SET    white = ? 
-          WHERE  id = 1''', 
-          ('Empty',)
-     )
-     db.execute(
-       '''UPDATE chessboard 
-          SET    black = ? 
-          WHERE  id = 1''', 
-          ('Empty',)
-     )     
-     db.execute(
-       '''UPDATE chessboard 
-          SET    fen = ? 
-          WHERE  id = 1''', 
-          (chess_starting_position_fen,)
-     )
+     with db.cursor() as cursor:
+          cursor.execute(
+          '''UPDATE chessboard 
+             SET    white = %s 
+             WHERE  id = 1''', 
+             ('Empty',)
+          )
+          cursor.execute(
+          '''UPDATE chessboard 
+             SET    black = %s 
+             WHERE  id = 1''', 
+             ('Empty',)
+          )     
+          cursor.execute(
+          '''UPDATE chessboard 
+             SET    fen = %s 
+             WHERE  id = 1''', 
+             (chess_starting_position_fen,)
+          )
+     db.commit()
 
 def calculate_elo_change(winner_elo, loser_elo):
      """
