@@ -37,7 +37,7 @@ def handle_game_end(results):
      and resets the players on the board
      :param results: dict{'winner': str, 'loser': str}
      """
-     db = get_db()
+     print("MAIN.PY: handle_game_end")
      winner = results['winner']
      loser = results['loser']
      if winner != 'Empty' and loser != 'Empty' and winner != loser:
@@ -83,17 +83,18 @@ def get_elo(user_id):
      with db.cursor() as cursor:
           cursor.execute(
                '''SELECT elo 
-                  FROM   user 
+                  FROM   users 
                   WHERE  id = %s''', 
                   (user_id,)
                )
           return cursor.fetchone()['elo']
+
 def get_user_id(username):
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
           '''SELECT id
-             FROM   user
+             FROM   users
              WHERE username = %s''',
              (username,)
           )
@@ -104,7 +105,7 @@ def update_elo(user_id, elo):
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
-          '''UPDATE user 
+          '''UPDATE users 
              SET    elo = %s 
              WHERE  id = %s''', 
              (elo, user_id)
