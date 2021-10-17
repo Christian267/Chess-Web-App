@@ -12,7 +12,5 @@ api = Api(app)
 from chessapp.sockets import chessEvents
 from chessapp.api import apiController
 
-
-
 if __name__=='__main__':
-    socketio.run(app, debug=True, host=str(config.Config.SERVER))
+    socketio.run(app, debug=True, host=str(config.DevelopmentConfig.SERVER))
