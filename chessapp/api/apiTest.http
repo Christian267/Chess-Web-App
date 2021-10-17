@@ -9,21 +9,28 @@ Content-Type: application/json
 
 
 ###
-put {{hostname}}/user/bobby
+put {{hostname}}/user/mark
 Content-Type: application/json
 
 {
-    "elo": 1200
+    "elo": 2000
 }
 
 ###
-get {{hostname}}/user/christian
+get {{hostname}}/user/bobby
 
 
 ###
-delete {{hostname}}/user/christian
+delete {{hostname}}/user/mark
 
+###
+patch {{hostname}}/user/bobby
+Content-Type: application/json
 
+{
+    "username": "bobby",
+    "elo": 3000
+}
 
 
 ###
