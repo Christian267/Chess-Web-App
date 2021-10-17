@@ -1,0 +1,35 @@
+@hostname = http://127.0.0.1:5000/
+
+put {{hostname}}/user/christian
+Content-Type: application/json
+
+{
+    "elo": 1400
+}
+
+
+###
+put {{hostname}}/user/bobby
+Content-Type: application/json
+
+{
+    "elo": 1200
+}
+
+###
+get {{hostname}}/user/christian
+
+
+###
+delete {{hostname}}/user/christian
+
+
+
+
+###
+put {{hostname}}/video/1
+Content-Type: application/json
+
+{
+    "likes": 10
+}

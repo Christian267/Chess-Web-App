@@ -58,10 +58,16 @@ def login():
                 FROM   users 
                 WHERE  username = %s''',
                 (username,))
-            user_id = cursor.fetchone()['id']
-            if user_id is None:
-                error = 'Could not find username.'
-            
+            if not username:
+                error = 'Username is required.'
+            user_id = None
+            # cursor.fetchone() is transient, returns None after 1st call
+            cursor_fetch = cursor.fetchone() 
+            if cursor_fetch is not None:
+                print("After if Statement:", cursor_fetch)
+                user_id = cursor_fetch['id']
+            elif not error:
+                error = 'Could not find username'
             if error is None:
                 session.clear()
                 session['user_id'] = user_id
