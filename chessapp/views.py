@@ -1,7 +1,9 @@
 import functools
+
 from flask import Blueprint
 from flask import Blueprint, flash, g, redirect, render_template, request,\
                   session, url_for, jsonify
+                  
 from chessapp.db import get_db
 
 view = Blueprint('views', __name__)
@@ -16,67 +18,6 @@ def home():
 def dashboard():
     match_history = get_history(g.user['username'])
     return render_template('dashboard.html', **{'match_history': match_history})
-
-@view.route('/register', methods=('GET', 'POST'))
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        db = get_db()
-        error = None
-        with db.cursor() as cursor:
-            cursor.execute(
-            '''SELECT  id 
-                FROM   users 
-                WHERE  username = %s''',
-                (username,))
-            if not username:
-                error = 'Username is required.'
-            elif cursor.fetchone() is not None:
-                error = f'User {username} is already registered.'
-
-            if error is None:
-                cursor.execute(
-                '''INSERT INTO users (username) 
-                    VALUES (%s)''', (username,)
-                ) 
-                db.commit()
-                return redirect(url_for('views.login'))
-        flash(error)
-    return render_template('register.html')
-
-@view.route('/login', methods=('GET', 'POST'))
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        db = get_db()
-        error = None
-        with db.cursor() as cursor:
-            cursor.execute(
-            '''SELECT  * 
-                FROM   users 
-                WHERE  username = %s''',
-                (username,))
-            if not username:
-                error = 'Username is required.'
-            user_id = None
-            # cursor.fetchone() is transient, returns None after 1st call
-            cursor_fetch = cursor.fetchone() 
-            if cursor_fetch is not None:
-                user_id = cursor_fetch['id']
-            elif not error:
-                error = 'Could not find username'
-            if error is None:
-                session.clear()
-                session['user_id'] = user_id
-                return redirect(url_for('views.home'))
-
-        flash(error)
-    return render_template('login.html')
-
-@view.route('/logout')
-def logout():
-    session.clear()
-    return redirect(url_for('views.home'))
 
 def login_required(view):
     @functools.wraps(view)

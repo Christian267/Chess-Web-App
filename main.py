@@ -19,4 +19,4 @@ from chessapp.sockets import chessEvents
 from chessapp.api import userController
 
 if __name__=='__main__':
-    socketio.run(app, debug=True, host=str(config.DevelopmentConfig.SERVER))
+    socketio.run(app, debug=bool(config.DevelopmentConfig.DEBUG), host=str(config.DevelopmentConfig.SERVER))

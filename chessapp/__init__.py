@@ -17,8 +17,10 @@ def create_app():
     # Register context processor
     with app.app_context():
         from .views import view
+        from .auth import auth
     
     db.init_app(app)
     app.register_blueprint(view)
+    app.register_blueprint(auth)
     
     return app
