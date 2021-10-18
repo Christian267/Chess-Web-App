@@ -1,4 +1,4 @@
--- Add a turn indicator to chessboard page
--- figure out how to migrate DB to postgres
--- Containerize project using docker
--- Deploy on an AWS EC2
+[X] Add a turn indicator to chessboard page
+[X] figure out how to migrate DB to postgres
+[] Containerize project using docker
+[] Deploy on an AWS EC2

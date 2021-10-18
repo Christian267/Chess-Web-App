@@ -12,6 +12,9 @@ auth = Blueprint('auth', __name__)
 def register():
     if request.method == 'POST':
         username = request.form['username']
+        password = request.form['password1']
+        passwordConfirm = request.form['password2']
+        print(username, password, passwordConfirm)
         db = get_db()
         error = None
         with db.cursor() as cursor:
@@ -39,6 +42,8 @@ def register():
 def login():
     if request.method == 'POST':
         username = request.form['username']
+        password = request.form['password']
+        print(username, password)
         db = get_db()
         error = None
         with db.cursor() as cursor:

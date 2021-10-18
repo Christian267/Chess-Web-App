@@ -4,59 +4,73 @@
 <style type="text/css">
   @import url(https://fonts.googleapis.com/css?family=Roboto:300);
   
-  .Register-page {
-    width: 360px;
+  .register-block {
+    width: 450px;
     padding: 8% 0 0;
     margin: auto;
   }
+
   .form {
     position: sticky;
     z-index: 1;
     background: #ffffff;
-    max-width: 360px;
+    max-width: 500px;
     margin: 0 auto 100px;
     padding: 30px;
     text-align: center;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
   }
+
   .form input { 
-    border-radius: 8px 8px 8px 8px;
-    font-family: "Roboto", sans-serif;
-    outline: 0;
-    background: #f2f2f2;
-    width: 100%;
-    border: 0;
-    margin: 0 0 15px;
-    padding: 15px;
+    background: #ffffff;
+    border-radius: 4px 4px 4px 4px;
+    border: 1px solid #dadada;
     box-sizing: border-box;
-    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    font-weight: 575; 
+    height: 43px;
+    margin: 0 0 15px;
+    outline: 0;
+    padding: 15px;
+    width: 100%;
   }
 
   .form input:focus{
-    border: 1px solid #1670BE;
-    box-shadow: 0 0 3px #1670BE;
+    border: 1px solid #1877f2;
+    box-shadow: 0 0 3px #1670be86;
     outline-offset: 0px;
     outline: none;
   }
-  .form button {
-    border-radius: 30px 30px 30px 30px;
-    text-transform: uppercase;
-    outline: 5px;
-    width: 100%;
-    border: 0;
-    padding: 10px;
-    color: #FFFFFF;
-    background-color: #0c72f7;
-    font-size: 14px;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3 ease;
-    cursor: pointer;
+
+  .form label{
+    float: left;
+    margin-bottom: 2px;
+    margin-left: 4px;
   }
+
+  .form button {
+    background-color: #1877f2;
+    border: 0;
+    border-radius: 8px 8px 8px 8px;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: bold;
+    height: 45px;
+    margin-top: 5px;
+    outline: 5px;
+    padding: 10px;
+    transition: all 1 ease;
+    width: 100%;
+    -webkit-transition: all 1 ease;
+  }
+
   .form button:hover,.form button:active,.form button:focus {
-    background: #0363e0;
-    -webkit-transition: background-color 100ms linear;
-    -ms-transition: background-color 100ms linear;
-    transition: background-color 100ms linear;
+    background-color: #035ccf;
+    -webkit-transition: background-color 200ms ease;
+    -ms-transition: background-color 200ms ease;
+    transition: background-color 200ms ease;
   }
 
   .form .message {
@@ -64,29 +78,67 @@
     color: #086bee;
     font-size: 12px;
   }
+
   .container {
     position: relative;
     z-index: 1;
     max-width: 300px;
     margin: 0 auto;
   }
+  
   .container:before, .container:after {
     content: "";
     display: block;
     clear: both;
   }
+
+  #category-select label {
+    float: left;
+    margin: 1px;
+  }
   
   </style>
   
-  <div class="Register-page">
-    <div class="form">
-        <form class="login-form" action="#" method="POST">
-          <input type="text" id="username" name="username" placeholder="Username"/>
-          <button type="submit" id="submitUsernameButton">Register</button>   
-        </form>   
+  <div class="register-block">
+    <form method="POST">
+      <div class="form">
+        <h3 align="center">Register</h3>
+        <br />
+        <!-- <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          placeholder="Email"
+        /> -->
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username"
+          name="username"
+          placeholder="Username"
+        />
+        <label for="password1">Password</label>
+        <input 
+          type="password" 
+          id="password1" 
+          name="password1" 
+          placeholder="Password"
+        />
+        <label for="password2">Confirm Password</label>
+        <input 
+          type="password" 
+          id="password2" 
+          name="password2" 
+          placeholder="Confirm Password"
+        />
         {% for message in get_flashed_messages() %}
-          <div class="flash">{{ message }}</div>
+        <div class="flash">{{ message }}</div>
         {% endfor %}
+        <br />
+        <button type="submit" id=submitButton>Register</button>   
+        </div>
       </div>
+    </form>
   </div>   
 {% endblock %}

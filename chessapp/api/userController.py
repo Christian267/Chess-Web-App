@@ -23,7 +23,6 @@ class UserModel(db_sa.Model):
             'elo': self.elo
         }
 
-
 user_put_args = reqparse.RequestParser()
 user_put_args.add_argument("elo", type=int, help="User elo required", required=True)
 

@@ -100,5 +100,5 @@
   }
 
   .leaderboard {
-    box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
+    box-shadow: 0 4px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
   }

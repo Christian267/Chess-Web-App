@@ -18,9 +18,11 @@ def create_app():
     with app.app_context():
         from .views import view
         from .auth import auth
-    
+        from .chess_bp import chess_bp
+
     db.init_app(app)
     app.register_blueprint(view)
     app.register_blueprint(auth)
+    app.register_blueprint(chess_bp)
     
     return app
