@@ -14,9 +14,7 @@ def home():
 
 @view.route('/dashboard')
 def dashboard():
-    print(g.user['username'])
     match_history = get_history(g.user['username'])
-    print(match_history)
     return render_template('dashboard.html', **{'match_history': match_history})
 
 @view.route('/register', methods=('GET', 'POST'))
@@ -64,7 +62,6 @@ def login():
             # cursor.fetchone() is transient, returns None after 1st call
             cursor_fetch = cursor.fetchone() 
             if cursor_fetch is not None:
-                print("After if Statement:", cursor_fetch)
                 user_id = cursor_fetch['id']
             elif not error:
                 error = 'Could not find username'
@@ -94,7 +91,6 @@ def login_required(view):
 @view.route('/leaderboard')
 def leaderboard():
     users = get_users()
-    print(users)
     return render_template('leaderboard.html', **{'users': users})
 
 @view.route('/chessboard')

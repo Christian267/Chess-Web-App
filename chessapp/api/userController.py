@@ -31,13 +31,6 @@ user_update_args = reqparse.RequestParser()
 user_update_args.add_argument("username", type=str, help="Username is required")
 user_update_args.add_argument("elo", type=int, help="New elo required")
 
-
-resource_fields = {
-    'id': fields.Integer,
-    'username': fields.String,
-    'elo': fields.Integer
-}
-
 class User(Resource):
     def get(self, user_username):
         print(user_username)
@@ -63,9 +56,9 @@ class User(Resource):
         print(args)
         if not result:
             abort(404, message=f'User {user_username} not found, cannot update')
-        if "username" in args:
+        if args['username']:
             result.username = args['username']
-        if "elo" in args:
+        if args['elo']:
             result.elo = args['elo']
         db_sa.session.commit()
 
