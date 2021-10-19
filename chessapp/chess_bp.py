@@ -12,8 +12,8 @@ chess_bp = Blueprint('chess_bp', __name__)
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        flash('Login before entering a chess match')  
         if g.user is None:
+            flash('Login before entering a chess match', category='error')  
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)

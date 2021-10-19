@@ -15,7 +15,7 @@ class HistoryModel(db_sa.Model):
     elo_change = db_sa.Column(db_sa.Integer, nullable=False)
 
     def __repr__(self):
-        return f"User(username = {username}, view = {views}, likes = {likes})"
+        return f"History Match(winner_id = {winner_id}, loser_id = {loser_id}, elo_change = {elo_change})"
 
     def serialize(self):
         return {
@@ -25,3 +25,5 @@ class HistoryModel(db_sa.Model):
             'loser_id': self.loser_id,
             'elo_change': self.elo_change
         }
+
+        
