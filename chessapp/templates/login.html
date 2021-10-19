@@ -121,9 +121,6 @@
             name="password" 
             placeholder="Password"
           />
-          {% for message in get_flashed_messages() %}
-          <div class="flash">{{ message }}</div>
-          {% endfor %}
           <br />
           <button type="submit" id=submitButton>Login</button>   
           </div>

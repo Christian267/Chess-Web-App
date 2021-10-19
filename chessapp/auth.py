@@ -3,7 +3,8 @@ import functools
 from flask import Blueprint
 from flask import Blueprint, flash, g, redirect, render_template, request,\
                   session, url_for, jsonify
-                  
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from chessapp.db import get_db
 
 auth = Blueprint('auth', __name__)
@@ -21,21 +22,24 @@ def register():
             cursor.execute(
             '''SELECT  id 
                 FROM   users 
-                WHERE  username = %s''',
-                (username,))
+                WHERE  lower(username) = %s''',
+                (username.lower(),))
             if not username:
                 error = 'Username is required.'
             elif cursor.fetchone() is not None:
-                error = f'User {username} is already registered.'
-
+                error = f'Username {username} is already taken.'
+            if password != passwordConfirm:
+                error = 'Passwords don\'t match'
             if error is None:
                 cursor.execute(
                 '''INSERT INTO users (username) 
                     VALUES (%s)''', (username,)
                 ) 
                 db.commit()
+                print('before flash account created')
+                flash('Account created!', category='success')
                 return redirect(url_for('auth.login'))
-        flash(error)
+        flash(error, category='error')
     return render_template('register.html')
 
 @auth.route('/login', methods=('GET', 'POST'))
