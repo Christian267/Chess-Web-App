@@ -3,6 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from __main__ import dbAlchemy
 
 
+class ChessboardModel(dbAlchemy.Model):
+    __tablename__ = 'chessboard'
+    id = dbAlchemy.Column(dbAlchemy.Integer, primary_key=True)
+    white = dbAlchemy.Column(dbAlchemy.Integer)
+    black = dbAlchemy.Column(dbAlchemy.Integer)
+    fen = dbAlchemy.Column(dbAlchemy.String(100))
+
+
 class HistoryModel(dbAlchemy.Model):
     __tablename__ = 'history'
     id = dbAlchemy.Column(dbAlchemy.Integer, primary_key=True)
