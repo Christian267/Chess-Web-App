@@ -20,6 +20,10 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
+@chess_bp.route('/roomselect')
+def roomselect():
+    return render_template('chess/roomselect.html')
+
 @chess_bp.route('/chessboard')
 @login_required
 def chessboard():

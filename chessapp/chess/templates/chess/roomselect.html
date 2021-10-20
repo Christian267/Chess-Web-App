@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}ChessBoard{% endblock %}
+{% block content %}
+<section class="section-products">
+    <div class="container">
+            <div class="row justify-content-center text-center">
+                    <div class="col-md-8 col-lg-6">
+                            <div class="header">
+                                    <h2>Competitive Lobbies</h2>
+                            </div>
+                    </div>
+            </div>
+            <div class="row">
+                    <!-- Single Product -->
+                    <a href="{{url_for('chess_bp.chessboard')}}" style="width: px; color: rgb(0,0,0); text-decoration: None">
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div id="product-1" class="single-product">
+                                    <div class="part-1">
+                                            <img 
+                                            src="{{url_for('static', filename='linus.jpg')}}" 
+                                            width="150" 
+                                            >
+                                    </div>
+                                    <div class="part-2">
+                                            <h5 class="product-title">Competitive Lobby 1</h3>
+                                            <h6 class="product-old-price">Match Status: Ongoing</h4>
+                                            <h6 class="product-price">Total Players in lobby: 2</h4>
+                                    </div>
+                            </div>
+                    </div>
+                    </a>
+            </div>
+            <div class="row justify-content-center text-center">
+                    <div class="col-md-8 col-lg-6">
+                            <div class="header">
+                                    <h2>Practice Lobbies</h2>
+                            </div>
+                    </div>
+            </div>
+            <div class="row">
+                <!-- Single Product -->
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div id="product-1" class="single-product">
+                                <div class="part-1">
+                                    <a href="{{url_for('chess_bp.chessboard')}}">
+                                        <img 
+                                        src="{{url_for('static', filename='gunch.jpg')}}" 
+                                        width="150" 
+                                        >
+                                    </a>
+                                </div>
+                                <div class="part-2">
+                                        <h5 class="product-title">Practice Lobby 1</h3>
+                                        <h6 class="product-old-price">Match Status: Ongoing</h4>
+                                        <h6 class="product-price">Total Players in lobby: 2</h4>
+                                </div>
+                        </div>
+                </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

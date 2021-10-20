@@ -36,7 +36,6 @@ def handle_game_end(results):
      and resets the players on the board
      :param results: dict{'winner': str, 'loser': str}
      """
-     print("MAIN.PY: handle_game_end")
      winner = results['winner']
      loser = results['loser']
      if winner != 'Empty' and loser != 'Empty' and winner != loser:
@@ -89,6 +88,9 @@ def get_elo(user_id):
           return cursor.fetchone()['elo']
 
 def get_user_id(username):
+     """
+     
+     """
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
@@ -101,6 +103,10 @@ def get_user_id(username):
      
 
 def update_elo(user_id, elo):
+     """
+     Called after the end of a valid chess game. Commits update to elo into
+     the users table of the database.
+     """
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
@@ -112,6 +118,10 @@ def update_elo(user_id, elo):
      db.commit()
 
 def update_board_state(board_state):
+     """
+     Updates the board state to a new fen. Called every time a player makes a
+     move on the chessboard.
+     """
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
@@ -123,6 +133,10 @@ def update_board_state(board_state):
      db.commit()
 
 def add_game_to_history(winner_id, loser_id, elo_change):
+     """
+     Called at the end of a valid chess game. Records winner and loser in addition to
+     the elo rating change that occurred as a result.
+     """
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
@@ -132,6 +146,9 @@ def add_game_to_history(winner_id, loser_id, elo_change):
           )     
      db.commit()
 def reset_chessboard():
+     """
+     Reverts the board back to its starting position, ready to start a new game.
+     """
      db = get_db()
      chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
      with db.cursor() as cursor:
