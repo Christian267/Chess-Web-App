@@ -17,8 +17,8 @@ def create_app():
     # Register context processor
     with app.app_context():
         from .views import view
-        from .auth import auth
-        from .chess_bp import chess_bp
+        from .auth.auth import auth
+        from .chess.chess_bp import chess_bp
 
     db.init_app(app)
     app.register_blueprint(view)

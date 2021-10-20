@@ -6,7 +6,8 @@ from flask import Blueprint, flash, g, redirect, render_template, request,\
                   
 from chessapp.db import get_db
 
-chess_bp = Blueprint('chess_bp', __name__)
+chess_bp = Blueprint('chess_bp', __name__,
+            template_folder='templates')
 
 
 def login_required(view):
@@ -23,7 +24,7 @@ def login_required(view):
 @login_required
 def chessboard():
     db = get_db()
-    return render_template('chessboard.html')
+    return render_template('chess/chessboard.html')
 
 @chess_bp.route('/get_username')
 def get_username():

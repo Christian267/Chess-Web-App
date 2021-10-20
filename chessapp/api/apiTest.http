@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ###
-get {{hostname}}/user/bobby
+get {{hostname}}/user/Christian
 
 
 ###

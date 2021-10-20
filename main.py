@@ -11,7 +11,7 @@ import config
 app = create_app()
 socketio = SocketIO(app)
 api = Api(app)
-db_sa= SQLAlchemy(app)
+dbAlchemy= SQLAlchemy(app)
 
 Base = declarative_base()
 

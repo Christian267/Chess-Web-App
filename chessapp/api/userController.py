@@ -3,24 +3,9 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 
 import config
-from __main__ import api, db_sa, Base
-from chessapp.db import get_db
+from __main__ import api, dbAlchemy, Base
+from chessapp.models import UserModel
 
-class UserModel(db_sa.Model):
-    __tablename__ = 'users'
-    id = db_sa.Column(db_sa.Integer, primary_key=True)
-    username = db_sa.Column(db_sa.String(100), nullable=False)
-    elo = db_sa.Column(db_sa.Integer, nullable=False)
-
-    def __repr__(self):
-        return f"User(username = {username}, view = {views}, likes = {likes})"
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'elo': self.elo
-        }
 
 user_put_args = reqparse.RequestParser()
 user_put_args.add_argument("elo", type=int, help="User elo required", required=True)
@@ -44,8 +29,8 @@ class User(Resource):
         if result:
             abort(409, message=f'Username {user_username} already taken')
         user = UserModel(username=user_username, elo=args['elo'])
-        db_sa.session.add(user)
-        db_sa.session.commit()
+        dbAlchemy.session.add(user)
+        dbAlchemy.session.commit()
         return user.serialize(), 201
 
     def patch(self, user_username):
@@ -58,7 +43,7 @@ class User(Resource):
             result.username = args['username']
         if args['elo']:
             result.elo = args['elo']
-        db_sa.session.commit()
+        dbAlchemy.session.commit()
 
         return result.serialize()
 
@@ -67,8 +52,8 @@ class User(Resource):
         if not result:
             abort(404, message=f"User {user_username} not found")
         user = UserModel.query.filter_by(username=user_username).first()
-        db_sa.session.delete(user)
-        db_sa.session.commit()
+        dbAlchemy.session.delete(user)
+        dbAlchemy.session.commit()
         return user.serialize()
 
 api.add_resource(User, "/user/<string:user_username>")

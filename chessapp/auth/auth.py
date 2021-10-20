@@ -7,7 +7,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from chessapp.db import get_db
 
-auth = Blueprint('auth', __name__)
+auth = Blueprint(
+    'auth', __name__, 
+    template_folder='templates',
+    static_folder='static')
 
 @auth.route('/register', methods=('GET', 'POST'))
 def register():
@@ -41,7 +44,7 @@ def register():
                 flash('Account created!', category='success')
                 return redirect(url_for('auth.login'))
         flash(error, category='error')
-    return render_template('register.html')
+    return render_template('auth/register.html')
 
 @auth.route('/login', methods=('GET', 'POST'))
 def login():
@@ -78,7 +81,7 @@ def login():
                 return redirect(url_for('views.home'))
 
         flash(error, category='error')
-    return render_template('login.html')
+    return render_template('auth/login.html')
 
 @auth.route('/logout')
 def logout():
