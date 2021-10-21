@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS history;
 DROP TABLE IF EXISTS chessboard;
-    
+DROP TABLE IF EXISTS practiceboard;
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR UNIQUE NOT NULL,
@@ -15,6 +16,12 @@ CREATE TABLE chessboard (
     black VARCHAR NOT NULL,
     fen VARCHAR NOT NULL
 );
+
+CREATE TABLE practice_board (
+    id SERIAL PRIMARY KEY,
+    fen VARCHAR NOT NULL
+);
+
 CREATE TABLE history (
     id SERIAL PRIMARY KEY,
     time_played TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

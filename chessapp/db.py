@@ -27,11 +27,18 @@ def init_db():
     with db.cursor() as cursor:
         cursor.execute(open('chessapp/schema.sql', 'r').read())
         chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-        cursor.execute(
-        '''INSERT INTO chessboard (white, black, fen) 
-            VALUES (%s, %s, %s)''', 
-            ('Empty', 'Empty', chess_starting_position_fen)
-        )
+        for i in range(10):
+            cursor.execute(
+            '''INSERT INTO chessboard (white, black, fen) 
+                VALUES (%s, %s, %s)''', 
+                ('Empty', 'Empty', chess_starting_position_fen)
+            )
+            cursor.execute(
+            '''INSERT INTO practiceboard (white, black, fen) 
+                VALUES (%s, %s, %s)''', 
+                ('Empty', 'Empty', chess_starting_position_fen)
+            )
+
         db.commit()
     
 @click.command('init-db')

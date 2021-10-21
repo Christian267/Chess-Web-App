@@ -6,10 +6,35 @@ from __main__ import dbAlchemy
 class ChessboardModel(dbAlchemy.Model):
     __tablename__ = 'chessboard'
     id = dbAlchemy.Column(dbAlchemy.Integer, primary_key=True)
-    white = dbAlchemy.Column(dbAlchemy.Integer)
-    black = dbAlchemy.Column(dbAlchemy.Integer)
+    white_id = dbAlchemy.Column(dbAlchemy.Integer)
+    black_id = dbAlchemy.Column(dbAlchemy.Integer)
     fen = dbAlchemy.Column(dbAlchemy.String(100))
 
+    def __repr__(self):
+        return f"Chessboard(white_id = {white_id}, black_id = {black_id}, fen = {fen})"
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'white_id': self.white_id,
+            'black_id': self.black_id,
+            'fen': self.fen
+        }
+
+
+class ChessboardModel(dbAlchemy.Model):
+    __tablename__ = 'practice_board'
+    id = dbAlchemy.Column(dbAlchemy.Integer, primary_key=True)
+    fen = dbAlchemy.Column(dbAlchemy.String(100))
+
+    def __repr__(self):
+        return f"Practice Board(fen = {fen})"
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'fen': self.fen
+        }
 
 class HistoryModel(dbAlchemy.Model):
     __tablename__ = 'history'
