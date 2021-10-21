@@ -576,7 +576,8 @@
     // default piece theme is wikipedia
     if (!config.hasOwnProperty('pieceTheme') ||
         (!isString(config.pieceTheme) && !isFunction(config.pieceTheme))) {
-      config.pieceTheme = 'static/images/chessPieces/{piece}.png'
+          config.pieceTheme = 'static/images/chessPieces/{piece}.png'
+          // console.log("config.pieceTheme: " + config.pieceTheme)
     }
 
     // animation speeds
@@ -856,6 +857,7 @@
 
     function buildPieceImgSrc (piece) {
       if (isFunction(config.pieceTheme)) {
+
         return config.pieceTheme(piece)
       }
 
@@ -883,7 +885,7 @@
       }
 
       html += '" />'
-
+      // console.log(html)
       return interpolateTemplate(html, CSS)
     }
 

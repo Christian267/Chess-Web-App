@@ -7,7 +7,8 @@ from flask import Blueprint, flash, g, redirect, render_template, request,\
 from chessapp.db import get_db
 
 chess_bp = Blueprint('chess_bp', __name__,
-            template_folder='templates')
+            template_folder='templates',
+            static_folder='static')
 
 
 def login_required(view):
@@ -24,10 +25,16 @@ def login_required(view):
 def roomselect():
     return render_template('chess/roomselect.html')
 
-@chess_bp.route('/chessboard')
+@chess_bp.route('/chessboard_room/<int:room>')
+def chessboard_room(room):
+    return redirect(url_for('chess_bp.chessboard', room=room))
+
+@chess_bp.route('/chessboard', methods=['GET'])
 @login_required
 def chessboard():
     db = get_db()
+    room = request.args.to_dict()
+    print(room)
     return render_template('chess/chessboard.html')
 
 @chess_bp.route('/get_username')

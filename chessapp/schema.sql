@@ -12,8 +12,10 @@ CREATE TABLE users (
 
 CREATE TABLE chessboard (
     id SERIAL PRIMARY KEY,
-    white VARCHAR NOT NULL,
     black VARCHAR NOT NULL,
+    white VARCHAR NOT NULL,
+    user_count INT DEFAULT 0,
+    game_status VARCHAR NOT NULL
     fen VARCHAR NOT NULL
 );
 
