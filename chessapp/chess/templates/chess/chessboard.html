@@ -1,142 +1,180 @@
 {% extends "base.html" %}
 {% block title %}ChessBoard{% endblock %}
 {% block content %}
-  <style type="text/css">
-      .board{
-        position: relative;
-        z-index: 1;
-        margin: 0 auto 200px;
-        width: 1200px;
-        height: 100vh;
-        z-index: 1;
-        text-align: center;
-        box-shadow: 0 4px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-      }
+<style type="text/css">
+.board{
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 200px;
+  width: 1200px;
+  height: 100vh;
+  z-index: 1;
+  text-align: center;
+  box-shadow: 0 4px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+}
 
-      .chessboard{
-        left: -200px;
-        width: 700px;
-        top: -200px;
-        margin: 0 auto;
-        padding: 10px;
-        position: relative;
-        vertical-align: top;
-        z-index: 1000;
-      }
+.chessboard{
+  left: -200px;
+  width: 700px;
+  top: -50px;
+  margin: 0 auto;
+  padding: 10px;
+  position: relative;
+  vertical-align: top;
+  z-index: 1;
+}
 
-      .button {
-        width: 150px;
-        padding: 15px 50px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        vertical-align: top;
-        cursor: pointer;
+.button {
+  width: 150px;
+  padding: 15px 50px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  vertical-align: top;
+  cursor: pointer;
+}
 
-      }
-      .white {
-        border: 1px solid black;
-        background-color: white;
-        color: black;
-        left: 400px; 
-        top: 350px; 
-        height: auto;
-        margin: 0 auto;
-        position: relative;
-      }
-      .black {
-        border: 1px solid black;
-        border: none;
-        background-color: black;
-        color: white;
-        left: 245px; 
-        top: 550px; 
-        height: auto;
-        margin: 0 auto;
-        position: relative;
-        }
+.button:focus {
+  outline: none;
+}
 
-      .white_player{
-        font-family: 'Helvetica Neue', sans-serif;
-        font-weight: bold;
-        font-size: 25px;
-        position: relative;
-        left: 320px;
-        top: 330px;
-      }
+.white {
+  border: 1px solid black;
+  background-color: white;
+  color: black;
+  left: 400px; 
+  top: 550px; 
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+    transition: all 1 ease;
+}
 
-      .black_player{
-        font-family: 'Helvetica Neue', sans-serif;
-        font-weight: bold;
-        font-size: 25px;
-        position: relative;
-        left: 320px;
-        top: 490px;
-      }
+.white:hover {
+  filter: brightness(0.95);
+}
 
-      .game_over{
-        position: relative;
-        color: white;
-        left: 360px;
-        top: 0px; 
-        font-family: 'Helvetica Neue', sans-serif;
-        font-size: 25px;
-        letter-spacing: -1px;
-        line-height: 1;
-      }
+.black {
+  border: 1px solid black;
+  border: none;
+  background-color: black;
+  color: white;
+  left: 245px; 
+  top: 150px; 
+  height: auto;
+  margin: 0 auto;
+  position: relative;
+  }
 
-      .winner_text{
-        position: relative;
-        color: white;
-        left: 360px;
-        top: 30px; 
-        font-family: 'Helvetica Neue', sans-serif;
-        font-size: 25px;
-        letter-spacing: -1px;
-        line-height: 1;
-      }
-      
-      .winner_name{
-        position: relative;
-        color: white;
-        left: 360px;
-        top: 30px; 
-        font-family: 'Helvetica Neue', sans-serif;
-        font-size: 40px;
-        font-weight: bold;
-        letter-spacing: -1px;
-        line-height: 1;
-      }
+.black:hover {
+  background-color: rgb(32, 32, 32);
+}
 
-      .turn{
-        position: relative;
-        left: 300px;
-        top: 0px; 
-        font-family: 'Helvetica Neue', sans-serif;
-        font-size: 25px;
-        font-weight: 600;
-        letter-spacing: -1px;
-        line-height: 1;
-      }
-  </style>
-      <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
-      <div id="gameBoard" class="board">
-          <button type="button" class="button white" id="choose_white" onclick="set_color('white')">White</button>   
-          <button type="button" class="button black" id="choose_black" onclick="set_color('black')">Black</button>
-          <div id="turn" class="turn">Current Turn: White</div>  
-          <div id="white_player" class="white_player">Empty</div>  
-          <div id="black_player" class="black_player">Empty</div>  
-          <div id="game_over" class="game_over">.</div>
-          <label id="winner_text" class="winner_text">.</label>
-          <div id="winner_name" class="winner_name">.</div>
-          <div class="chessboard" id="chessboard"></div>
-          <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
-          <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-          <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
-          <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
-          <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-          <script src="{{ url_for('static', filename='js/chessboardpage.js') }}"></script>
-      </div>
+.game_over{
+  position: relative;
+  color: white;
+  left: 360px;
+  top: 0px; 
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 25px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.winner_text{
+  position: relative;
+  color: white;
+  left: 360px;
+  top: 30px; 
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 25px;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.winner_name{
+  position: relative;
+  color: white;
+  left: 360px;
+  top: 30px; 
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 40px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.turn{
+  position: relative;
+  left: 300px;
+  top: 300px; 
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+  /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
+  
+  <div id="game-end-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="modal-close">&times;</span>
+      <p id="game-over"></p>
+      <label id="winner-text" class="winner-text"></label>
+      <div id="winner-name" class="winner-name"></div>
+    </div>
+  </div>
+
+  <div id="gameBoard" class="board">
+      <button type="button" class="button white" id="white-player" onclick="set_color('white')">White</button>   
+      <button type="button" class="button black" id="black-player" onclick="set_color('black')">Black</button>
+      <div class="chessboard" id="chessboard"></div>
+      <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
+      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+      <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
+      <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/chessboardpage.js') }}"></script>
+  </div>
 {% endblock %}
