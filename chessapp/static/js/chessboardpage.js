@@ -10,6 +10,7 @@ var fen = '';
 const whiteUsernameBlock = document.getElementById('white-player');
 const blackUsernameBlock = document.getElementById('black-player');
 const gameOverText = document.getElementById('game-over');
+const winnerName = document.getElementById('winner-name');
 const modal = document.getElementById("game-end-modal");
 const modalSpan = document.getElementsByClassName("close")[0];
 
@@ -107,6 +108,7 @@ function updateStatus (update_from_server) {
             else {
                 whiteUsernameBlock.style.boxShadow = '0 0 4px 4px rgba(255, 255, 0, .5)';
             }
+            winnerName.innerHTML = winner;
             console.log('game has ended!')
             var results = {
                 winner: winner,
@@ -168,7 +170,7 @@ async function fetch_fen() {
 function set_color(color) {
     var player_and_color = {
         color: color,
-        name: username
+        name:  username
     };
 
     socket.emit('set color', player_and_color);
@@ -193,13 +195,18 @@ socket.emit('set color', null);
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];
-    document.getElementById('white-player').innerHTML = white_player;
-    document.getElementById('black-player').innerHTML = black_player;
+    if (white_player !== 'Empty')
+        whiteUsernameBlock.innerHTML = white_player;
+    else whiteUsernameBlock.innerHTML = 'Choose White';
+    if (black_player !== 'Empty')
+        blackUsernameBlock.innerHTML = black_player;
+    else blackUsernameBlock.innerHTML = 'Choose Black';
+
 });
 
 socket.on('reset board', function () {
-    white_player = 'Empty';
-    black_player = 'Empty';
+    white_player = 'Choose White';
+    black_player = 'Choose Black';
 });
 
 socket.on('connect', async function() {
