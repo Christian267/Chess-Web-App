@@ -68,24 +68,28 @@ def handle_chess_move(data):
      emit('chess move', data['move'], room=room, include_self=False)
 
 @socketio.on('game end')
-def handle_game_end(results):
+def handle_game_end(data):
      """
      Once a chess game concludes, this method updates user elo, adds the match the match history table,
      and resets the players on the board
-     :param results: dict{'winner': str, 'loser': str}
+     :param data: dict{'winner': str, 'loser': str}
      """
-     winner = results['winner']
-     loser = results['loser']
+     print('GAME END, data:', data)
+     roomType = data['roomType']
+     roomNumber = data['roomNumber']
+     winner = data['winner']
+     loser = data['loser']
      if winner != 'Empty' and loser != 'Empty' and winner != loser:
           winner_id = get_user_id(winner)
           loser_id = get_user_id(loser)
           winner_elo = get_elo(winner_id)
           loser_elo = get_elo(loser_id)
+          game_length = get_game_length(roomType, roomNumber)
           winner_elo, loser_elo, elo_change = calculate_elo_change(winner_elo, loser_elo)
           add_game_to_history(winner_id, loser_id, elo_change, game_length)
           update_elo(winner_id,  winner_elo)
           update_elo(loser_id, loser_elo)
-     reset_chessboard()
+     reset_chessboard(roomType, roomNumber)
      
 
 # Utilities
@@ -102,17 +106,6 @@ def add_game_to_history(winner_id, loser_id, elo_change, game_length):
              (winner_id, loser_id, elo_change, game_length)
           )     
      db.commit()
-
-def get_elo(user_id):
-     db = get_db()
-     with db.cursor() as cursor:
-          cursor.execute(
-               '''SELECT elo 
-                  FROM   users 
-                  WHERE  id = %s''', 
-                  (user_id,)
-               )
-          return cursor.fetchone()['elo']
 
 def calculate_elo_change(winner_elo, loser_elo):
      """
@@ -148,6 +141,21 @@ def increment_user_count(roomType, roomNumber):
           board = PracticeboardModel.query.filter_by(id=roomNumber).first()
      board.user_count += 1
      dbAlchemy.session.commit()
+
+def get_elo(user_id):
+     db = get_db()
+     with db.cursor() as cursor:
+          cursor.execute(
+               '''SELECT elo 
+                  FROM   users 
+                  WHERE  id = %s''', 
+                  (user_id,)
+               )
+          return cursor.fetchone()['elo']
+
+def get_game_length(roomType, roomNumber):
+     board = ChessboardModel.query.filter_by(id=roomNumber).first()
+     return board.turn_number
 
 def get_player(color, roomType, roomNumber):
      """
@@ -192,6 +200,7 @@ def update_board_state(board_state, roomType, roomNumber):
      """
      if roomType == 'chessboard':
           board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board.turn_number += 1
      else:
           board = PracticeboardModel.query.filter_by(id=roomNumber).first()
      board.fen = board_state
@@ -251,31 +260,31 @@ def update_player_color(player_color, player_name, roomType, roomNumber):
      #      )
      # db.commit()
 
-def reset_chessboard():
+def reset_chessboard(roomType, roomNumber):
      """
      Reverts the board back to its starting position, ready to start a new game.
      """
      db = get_db()
-     chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+     chess_starting_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
      with db.cursor() as cursor:
           cursor.execute(
           '''UPDATE chessboard 
-             SET    white = %s 
-             WHERE  id = 1''', 
-             ('Empty',)
+             SET    white = %s, black = %s, fen = %s, turn_number = 0
+             WHERE  id = %s''', 
+             ('Empty', 'Empty', chess_starting_fen, roomNumber)
           )
-          cursor.execute(
-          '''UPDATE chessboard 
-             SET    black = %s 
-             WHERE  id = 1''', 
-             ('Empty',)
-          )     
-          cursor.execute(
-          '''UPDATE chessboard 
-             SET    fen = %s 
-             WHERE  id = 1''', 
-             (chess_starting_position_fen,)
-          )
+          # cursor.execute(
+          # '''UPDATE chessboard 
+          #    SET    black = %s 
+          #    WHERE  id = %s''', 
+          #    ('Empty', roomNumber)
+          # )     
+          # cursor.execute(
+          # '''UPDATE chessboard 
+          #    SET    fen = %s 
+          #    WHERE  id = %s''', 
+          #    (chess_starting_fen, roomNumber)
+          # )
      db.commit()
 
 

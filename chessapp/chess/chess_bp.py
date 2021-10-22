@@ -46,9 +46,14 @@ def roomselect():
 @chess_bp.route('/chessboard', methods=['GET'])
 @login_required
 def chessboard():
-    db = get_db()
     room = request.args.to_dict()
     return render_template('chess/chessboard.html', room=room)
+
+@chess_bp.route('/practiceboard', methods=['GET'])
+@login_required
+def practiceboard():
+    room = request.args.to_dict()
+    return render_template('chess/practiceboard.html', room=room)
 
 @chess_bp.route('/get_username')
 def get_username():

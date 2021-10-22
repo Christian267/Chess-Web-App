@@ -47,12 +47,12 @@ function onDragStart (piece) {
 function onDrop (source, target) {
     // see if the move is legal
     // player trying to move out of turn
-    if (game.turn() === 'b' && username != black_player){
-        return 'snapback'
-    }
-    if ((game.turn() === 'w' && username != white_player)){
-        return 'snapback'
-    }
+    // if (game.turn() === 'b' && username != black_player){
+    //     return 'snapback'
+    // }
+    // if ((game.turn() === 'w' && username != white_player)){
+    //     return 'snapback'
+    // }
     var move = game.move({
         from: source,
         to: target,
@@ -64,7 +64,7 @@ function onDrop (source, target) {
     var data = {
         move: move,
         board_state: game.fen(),
-        roomType: 'chessboard',
+        roomType: 'practice_board',
         roomNumber: roomNumber
     };
 
@@ -104,14 +104,14 @@ function updateStatus (update_from_server) {
             }
             winnerName.innerHTML = winner;
             console.log('game has ended!')
-            var results = {
+            const data = {
                 roomType: 'chessboard',
                 roomNumber: roomNumber,
                 winner: winner,
                 loser: loser
             }
             // ensure that only a single call to the database is performed, preventing duplicate rows in history table
-            if (update_from_server === false) socket.emit('game end', results);
+            if (update_from_server === false) socket.emit('game end', data);
         }
 
     }
@@ -154,7 +154,7 @@ async function load_players() {
 }
 
 async function fetch_fen() {
-    return await fetch('/api/chessboard/' + roomNumber.toString(), {
+    return await fetch('/api/practiceboard/' + roomNumber.toString(), {
         method: "get",
     }).then(async function (response){
             return await response.json();
@@ -177,7 +177,7 @@ function highlight_current_turn() {
 
 function set_color(color) {
     socket.emit('set color', {
-        'roomType': 'chessboard',
+        'roomType': 'practice_board',
         'roomNumber': roomNumber,
         'color': color,
         'username': username
@@ -199,7 +199,7 @@ window.onclick = function(event) {
     }
     }
 
-socket.emit('set color', {'roomType': 'chessboard', 'roomNumber': roomNumber});
+socket.emit('set color', {'roomType': 'practice_board', 'roomNumber': roomNumber});
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];
@@ -220,7 +220,7 @@ socket.on("chess move", function(move) {
 
 socket.on('connect', async function() {
     username = await fetch_username();
-    socket.emit('join room', { 'username': username, 'roomType': 'chessboard', 'roomNumber': roomNumber });
+    socket.emit('join room', { 'username': username, 'roomType': 'practice_board', 'roomNumber': roomNumber });
     fen = await fetch_fen();
     game.load(fen);
     board.position(game.fen());
@@ -230,7 +230,7 @@ socket.on('connect', async function() {
 
 socket.on('disconnect', function() {
     console.log('disconnecting');
-    socket.emit('leave room', { 'username': username, 'roomType': 'chessboard', 'roomNumber': roomNumber });
+    socket.emit('leave room', { 'username': username, 'roomType': 'practice_board', 'roomNumber': roomNumber });
 })
 
 socket.on('join room announcement', function (data) {

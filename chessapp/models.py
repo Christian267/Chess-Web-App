@@ -9,12 +9,14 @@ class ChessboardModel(dbAlchemy.Model):
     black        = dbAlchemy.Column(dbAlchemy.String(100), default='Empty', nullable=False)
     board_status = dbAlchemy.Column(dbAlchemy.String(100), default='Available', nullable=False)
     user_count   = dbAlchemy.Column(dbAlchemy.Integer,     default=0, nullable=False)
-    fen          = dbAlchemy.Column(dbAlchemy.String(100), 
+    turn_number  = dbAlchemy.Column(dbAlchemy.Integer) 
+    fen          = dbAlchemy.Column(dbAlchemy.String(100),
                 default='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', 
                 nullable=False)
 
     def __repr__(self):
-        return f"Chessboard(white = {self.white}, black = {self.black}, board_status = {self.board_status}, user_count = {self.user_count}, fen = {self.fen})"
+        return (f"Chessboard(white = {self.white}, black = {self.black}, board_status = {self.board_status}, "
+                f"user_count = {self.user_count}, turn_number = {self.turn_number}, fen = {self.fen})")
 
     def serialize(self):
         return {
@@ -23,6 +25,7 @@ class ChessboardModel(dbAlchemy.Model):
             'black'         : self.black,
             'board_status'  : self.board_status,
             'user_count'    : self.user_count,
+            'turn_number'   : self.turn_number,
             'fen'           : self.fen
         }
 

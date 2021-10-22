@@ -1,5 +1,13 @@
 @hostname = http://127.0.0.1:5000/
 
+put {{hostname}}/api/practiceboard/1
+Content-Type: application/json
+
+{
+    "fen": "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+}
+
+###
 get {{hostname}}/api/chessboard/1
 
 ###
@@ -28,7 +36,7 @@ Content-Type: application/json
 }
 
 ###
-get {{hostname}}/user/bobby
+get {{hostname}}/user/Christian
 
 
 ###

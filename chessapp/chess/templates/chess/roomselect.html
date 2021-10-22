@@ -47,11 +47,11 @@
             {% for practiceboard in practiceboards %}
             <div class="col-md-6 col-lg-4 col-xl-3">
                 <div id="lobby-{{practiceboard['id']}}" class="single-lobby">
-                    <a href="{{url_for('chess_bp.chessboard', room=practiceboard['id'])}}">
+                    <a href="{{url_for('chess_bp.practiceboard', room=practiceboard['id'])}}">
                         <div class="lobby-image">
                             <img 
                             src="{{url_for('static', filename='images/gunch.jpg')}}" 
-                            width="170" 
+                            width="190" 
                             >
                         </div>
                         <div class="lobby-details">

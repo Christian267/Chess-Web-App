@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS history;
 DROP TABLE IF EXISTS chessboard;
 DROP TABLE IF EXISTS practice_board;
+DROP TABLE IF EXISTS chess_puzzles;
 
 CREATE TABLE users (
     id       SERIAL PRIMARY KEY,
@@ -16,6 +17,7 @@ CREATE TABLE chessboard (
     white           VARCHAR NOT NULL DEFAULT 'Empty',
     board_status    VARCHAR NOT NULL DEFAULT 'Available',
     user_count      INT NOT NULL DEFAULT 0,
+    turn_number     INT NOT NULL DEFAULT 0,
     fen             VARCHAR NOT NULL DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 );
 
@@ -24,6 +26,12 @@ CREATE TABLE practice_board (
     board_status    VARCHAR NOT NULL DEFAULT 'Available',
     user_count      INT NOT NULL DEFAULT 0,
     fen             VARCHAR NOT NULL DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+);
+
+CREATE TABLE chess_puzzles (
+    id          SERIAL PRIMARY KEY,
+    fen         VARCHAR NOT NULL,
+    solution    VARCHAR NOT NULL
 );
 
 CREATE TABLE history (
