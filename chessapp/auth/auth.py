@@ -37,7 +37,7 @@ def register():
                 error = 'Passwords don\'t match'
             if error is None:
                 cursor.execute(
-                '''INSERT INTO users (username, pass) 
+                '''INSERT INTO users (username, pw) 
                     VALUES (%s, %s)''', (username, generate_password_hash(password, method='sha256'))
                 ) 
                 db.commit()
@@ -68,7 +68,7 @@ def login():
             cursor_fetch = cursor.fetchone() 
             if cursor_fetch:
                 user_id = cursor_fetch['id']
-                user_password = cursor_fetch['pass']
+                user_password = cursor_fetch['pw']
                 print(user_id, user_password)
                 if not check_password_hash(user_password, password):
                     error = 'Incorrect password'

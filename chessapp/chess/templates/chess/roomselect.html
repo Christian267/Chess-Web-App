@@ -13,42 +13,27 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row" style="max-width: 80vw">
             <!-- Single Product -->
+            {% for chessboard in chessboards %}
             <div class="col-md-6 col-lg-4 col-xl-3" style="max-width: 250px;">
-                    <div id="lobby-1" class="single-lobby">
-                        <a href="{{url_for('chess_bp.chessboard')}}">
-                            <div class="lobby-image">
-                                <img 
-                                src="{{url_for('static', filename='images/linus.jpg')}}" 
-                                width="190" 
-                                >
-                            </div>
-                            <div class="lobby-details">
-                                <h5 class="lobby-title"">Competitive Lobby 1</h3>
-                                <h6 class="lobby-status">Match Status: Ongoing</h4>
-                                <h6 class="lobby-player-count">Total Players in lobby: 2</h4>
-                            </div>
-                        </a>
-                    </div>
+                <div id="lobby-{{chessboard['id']}}" class="single-lobby">
+                    <a href="{{url_for('chess_bp.chessboard', room=chessboard['id'])}}">
+                        <div class="lobby-image">
+                            <img 
+                            src="{{url_for('static', filename='images/linus.jpg')}}" 
+                            width="190" 
+                            >
+                        </div>
+                        <div class="lobby-details">
+                            <h5 class="lobby-title"">Competitive Lobby {{chessboard['id']}}</h3>
+                            <h6 class="lobby-status">Match Status: {{chessboard['board_status']}}</h4>
+                            <h6 class="lobby-player-count">Users in lobby: {{chessboard['user_count']}}</h4>
+                        </div>
+                    </a>
+                </div>
             </div>
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                    <div id="lobby-1" class="single-lobby">
-                        <a href="{{url_for('chess_bp.chessboard')}}">
-                            <div class="lobby-image">
-                                <img 
-                                src="{{url_for('static', filename='images/linus.jpg')}}" 
-                                width="190" 
-                                >
-                            </div>
-                            <div class="lobby-details">
-                                <h5 class="lobby-title"">Competitive Lobby 1</h3>
-                                <h6 class="lobby-status">Match Status: Ongoing</h4>
-                                <h6 class="lobby-player-count">Total Players in lobby: 2</h4>
-                            </div>
-                        </a>
-                    </div>
-            </div>
+            {% endfor %}
         </div>
         <div class="row justify-content-center text-center">
             <div class="col-md-8 col-lg-6">
@@ -59,23 +44,25 @@
         </div>
         <div class="row">
             <!-- Single Product -->
+            {% for practiceboard in practiceboards %}
             <div class="col-md-6 col-lg-4 col-xl-3">
-                    <div id="lobby-1" class="single-lobby">
-                        <a href="{{url_for('chess_bp.chessboard')}}">
-                            <div class="lobby-image">
-                                <img 
-                                src="{{url_for('static', filename='images/gunch.jpg')}}" 
-                                width="170" 
-                                >
-                            </div>
-                            <div class="lobby-details">
-                                <h5 class="lobby-title">Practice Lobby 1</h3>
-                                <h6 class="lobby-status">Match Status: Ongoing</h4>
-                                <h6 class="lobby-player-count">Total Players in lobby: 2</h4>
-                            </div>
-                        </a>
-                    </div>
+                <div id="lobby-{{practiceboard['id']}}" class="single-lobby">
+                    <a href="{{url_for('chess_bp.chessboard', room=practiceboard['id'])}}">
+                        <div class="lobby-image">
+                            <img 
+                            src="{{url_for('static', filename='images/gunch.jpg')}}" 
+                            width="170" 
+                            >
+                        </div>
+                        <div class="lobby-details">
+                            <h5 class="lobby-title">Practice Lobby {{practiceboard['id']}}</h3>
+                            <h6 class="lobby-status">Match Status: {{practiceboard['board_status']}}</h4>
+                            <h6 class="lobby-player-count">Users in lobby: {{practiceboard['user_count']}}</h4>
+                        </div>
+                    </a>
+                </div>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>

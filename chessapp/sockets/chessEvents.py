@@ -20,8 +20,8 @@ def handle_set_color(playerColor):
           update_player_color(playerColor['color'], playerColor['name'])
      white_player = get_player('white')
      black_player = get_player('black')
-
      players = {'white': white_player, 'black': black_player}
+     print(players)
      emit('set player colors', players, broadcast=True)
 
 @socketio.on('chess move')
@@ -44,7 +44,7 @@ def handle_game_end(results):
           winner_elo = get_elo(winner_id)
           loser_elo = get_elo(loser_id)
           winner_elo, loser_elo, elo_change = calculate_elo_change(winner_elo, loser_elo)
-          add_game_to_history(winner_id, loser_id, elo_change)
+          add_game_to_history(winner_id, loser_id, elo_change, game_length)
           update_elo(winner_id,  winner_elo)
           update_elo(loser_id, loser_elo)
      reset_chessboard()
@@ -53,7 +53,8 @@ def handle_game_end(results):
 # Utilities
 def update_player_color(player_color=None, player_name=None):
      """
-     
+     Updates the player color in the chessboard table. This value corresponds to the 
+     player color on the chessboard page UI.
      """
      if player_color is None or player_name is None:
           return
@@ -68,11 +69,16 @@ def update_player_color(player_color=None, player_name=None):
      db.commit()
 
 def get_player(color):
+     """
+     Values used to update the player tags on the chessboard UI.
+     """
      db = get_db()
+     print(color)
      with db.cursor() as cursor:
           cursor.execute(
                f'''SELECT {color} 
-                   FROM   chessboard'''
+                   FROM   chessboard
+                   WHERE id=1'''
           )
           return cursor.fetchone()[color]
 
@@ -100,7 +106,6 @@ def get_user_id(username):
              (username,)
           )
           return cursor.fetchone()['id']
-     
 
 def update_elo(user_id, elo):
      """
@@ -132,7 +137,7 @@ def update_board_state(board_state):
           )
      db.commit()
 
-def add_game_to_history(winner_id, loser_id, elo_change):
+def add_game_to_history(winner_id, loser_id, elo_change, game_length):
      """
      Called at the end of a valid chess game. Records winner and loser in addition to
      the elo rating change that occurred as a result.
@@ -140,11 +145,12 @@ def add_game_to_history(winner_id, loser_id, elo_change):
      db = get_db()
      with db.cursor() as cursor:
           cursor.execute(
-          '''INSERT INTO history (winner_id, loser_id, elo_change) 
-             VALUES (%s, %s, %s)''', 
-             (winner_id, loser_id, elo_change)
+          '''INSERT INTO history (winner_id, loser_id, elo_change, game_length) 
+             VALUES (%s, %s, %s, %s)''', 
+             (winner_id, loser_id, elo_change, game_length)
           )     
      db.commit()
+
 def reset_chessboard():
      """
      Reverts the board back to its starting position, ready to start a new game.

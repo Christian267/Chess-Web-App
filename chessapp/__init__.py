@@ -1,6 +1,11 @@
 import os
+
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 from . import db
+
+dbAlchemy = SQLAlchemy()
 
 def create_app():
     """Construct the application"""
@@ -8,6 +13,7 @@ def create_app():
     # create and configure app
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
+    dbAlchemy.init_app(app)
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
@@ -19,6 +25,7 @@ def create_app():
         from .views import view
         from .auth.auth import auth
         from .chess.chess_bp import chess_bp
+        from .models import UserModel, HistoryModel, ChessboardModel, PracticeboardModel
 
     db.init_app(app)
     app.register_blueprint(view)

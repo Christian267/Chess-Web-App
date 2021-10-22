@@ -30,7 +30,7 @@ onDrop: onDrop,
 };
 board = Chessboard('chessboard', config);
 board.position();
-updateStatus(false);
+// updateStatus(false);
 
 function onDragStart (piece) {
     // do not pick up pieces if the game is over
@@ -77,25 +77,16 @@ function onSnapEnd () {
 }
 
 function updateStatus (update_from_server) {
-    var status = '';
-    var moveColor = 'White';
-    if (game.turn() === 'b') {
-        moveColor = 'Black';
-        blackUsernameBlock.style.boxShadow = '0 0 2px 2px rgba(0, 0, 255, .9)';
-        whiteUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, .4)';
-    }
-    else {
-        blackUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, .4)';
-        whiteUsernameBlock.style.boxShadow = '0 0 2px 2px rgba(0, 0, 255, .9)';
-    }
-
+    var statusText = '';
+    var moveColor = game.turn() === 'b' ? 'Black': 'White';
+    highlight_current_turn();
     // checkmate
     if (game.in_checkmate()) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.';
+        statusText = 'Game over, ' + moveColor + ' is in checkmate.';
         if (gameAlreadyEnded == false){
             gameAlreadyEnded = true;
             open_modal();
-            gameOverText.innerHTML = status;
+            gameOverText.innerHTML = statusText;
             winner = white_player;
             loser = black_player;
             blackUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, .4)';
@@ -167,6 +158,17 @@ async function fetch_fen() {
         });
 }
 
+function highlight_current_turn() {
+    if (game.turn() === 'w') {
+        blackUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, 0)';
+        whiteUsernameBlock.style.boxShadow = '0 0 2px 2px rgba(0, 0, 255, .9)';
+    }
+    else {
+        blackUsernameBlock.style.boxShadow = '0 0 2px 2px rgba(0, 0, 255, .9)';
+        whiteUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, 0)';
+    }
+}
+
 function set_color(color) {
     var player_and_color = {
         color: color,
@@ -195,6 +197,7 @@ socket.emit('set color', null);
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];
+    console.log(player_colors);
     if (white_player !== 'Empty')
         whiteUsernameBlock.innerHTML = white_player;
     else whiteUsernameBlock.innerHTML = 'Choose White';
@@ -214,7 +217,8 @@ socket.on('connect', async function() {
     fen = await fetch_fen();
     game.load(fen);
     board.position(game.fen());
-    if (username != ''){
+    highlight_current_turn();
+    if (username != '') {
         console.log(username + ' has joined the server!');
     }
 });

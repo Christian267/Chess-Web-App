@@ -14,15 +14,16 @@ Content-Type: application/json
 
 
 ###
-put {{hostname}}/user/mark
+put {{hostname}}/user/bobby
 Content-Type: application/json
 
 {
+    "pw": "bobby",
     "elo": 2000
 }
 
 ###
-get {{hostname}}/user/Christian
+get {{hostname}}/user/bobby
 
 
 ###

@@ -5,6 +5,8 @@ from flask import Blueprint, flash, g, redirect, render_template, request,\
                   session, url_for, jsonify
                   
 from chessapp.db import get_db
+from chessapp import dbAlchemy
+from chessapp.models import ChessboardModel, PracticeboardModel
 
 chess_bp = Blueprint('chess_bp', __name__,
             template_folder='templates',
@@ -23,11 +25,15 @@ def login_required(view):
 
 @chess_bp.route('/roomselect')
 def roomselect():
-    return render_template('chess/roomselect.html')
-
-@chess_bp.route('/chessboard_room/<int:room>')
-def chessboard_room(room):
-    return redirect(url_for('chess_bp.chessboard', room=room))
+    chessboardRows = ChessboardModel.query.all()
+    practiceBoardRows = PracticeboardModel.query.all()
+    for i in range(len(chessboardRows)):
+        chessboardRows[i] = chessboardRows[i].serialize()
+        practiceBoardRows[i] = practiceBoardRows[i].serialize()
+        print(chessboardRows[i]['board_status'])
+    chessboardRows.sort(key=lambda chessboardRow: chessboardRow['id'])
+    practiceBoardRows.sort(key=lambda practiceBoardRow: practiceBoardRow['id'])
+    return render_template('chess/roomselect.html', **{'chessboards': chessboardRows, 'practiceboards': practiceBoardRows})
 
 @chess_bp.route('/chessboard', methods=['GET'])
 @login_required

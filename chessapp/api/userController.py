@@ -1,14 +1,16 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
-
+from werkzeug.security import generate_password_hash, check_password_hash
 import config
-from __main__ import api, dbAlchemy, Base
+from __main__ import api
+from chessapp import dbAlchemy
 from chessapp.models import UserModel
 
 
 user_put_args = reqparse.RequestParser()
 user_put_args.add_argument("elo", type=int, help="User elo required", required=True)
+user_put_args.add_argument("pw", type=str, help="Password required", required=True)
 
 user_update_args = reqparse.RequestParser()
 user_update_args.add_argument("username", type=str, help="Username is required")
@@ -28,7 +30,8 @@ class User(Resource):
         result = UserModel.query.filter_by(username=user_username).first()
         if result:
             abort(409, message=f'Username {user_username} already taken')
-        user = UserModel(username=user_username, elo=args['elo'])
+        hashedPassword = generate_password_hash(args['pw'], method='sha256')
+        user = UserModel(username=user_username, pw=hashedPassword, elo=args['elo'])
         dbAlchemy.session.add(user)
         dbAlchemy.session.commit()
         return user.serialize(), 201

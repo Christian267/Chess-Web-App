@@ -33,21 +33,21 @@
                 <a class="nav-link" id="login" href="/">{{ g.user['username'] }} <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" id="logout" href="/logout">logout <span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="logout" href="{{url_for('auth.logout')}}">logout <span class="sr-only">(current)</span></a>
               </li>
               {% else %}
               <li class="nav-item active">
-                <a class="nav-link" id="register" href="register">Register <span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="register" href="{{url_for('auth.register')}}">Register <span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" id="login" href="login">Login <span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="login" href="{{url_for('auth.login')}}">Login <span class="sr-only">(current)</span></a>
               </li>
               {% endif %}
               <li class="nav-item active">
-                <a class="nav-link" id="leaderboard" href="/leaderboard">Leaderboard<span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="leaderboard" href="{{url_for('views.leaderboard')}}">Leaderboard<span class="sr-only">(current)</span></a>
               </li>
               <li class="nav-item active">
-                <a class="nav-link" id="chessboard_link" href="chessboard">Chessboard<span class="sr-only">(current)</span></a>
+                <a class="nav-link" id="chessboard_link" href="{{url_for('chess_bp.roomselect')}}">Chessboard<span class="sr-only">(current)</span></a>
               </li>
           </ul>
         </div>

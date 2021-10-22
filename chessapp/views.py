@@ -24,7 +24,7 @@ def leaderboard():
     users = get_users()
     return render_template('leaderboard.html', **{'users': users})
 
-@view.route('/get_history')
+@view.route('/get_history') 
 def get_history(username):
     db = get_db()
     with db.cursor() as cursor:

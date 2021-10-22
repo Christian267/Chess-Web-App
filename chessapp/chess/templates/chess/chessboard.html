@@ -151,30 +151,30 @@
   cursor: pointer;
 }
 </style>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
-  <!-- <button id="myBtn" onclick="open_modal()">Open Modal</button> -->
-  <div id="game-end-modal" class="modal">
-    <div class="modal-content">
-      <span class="close" id="modal-close">&times;</span>
-      <div class="modal-content-text">
-        <p id="game-over" class="game-over">Game over, white is in checkmate!</p>
-        <label id="winner-text" class="winner-text">Winner:</label>
-        <div id="winner-name" class="winner-name">Christian</div>
-      </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
+<!-- <button id="myBtn" onclick="open_modal()">Open Modal</button> -->
+<div id="game-end-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="modal-close">&times;</span>
+    <div class="modal-content-text">
+      <p id="game-over" class="game-over">Game over, white is in checkmate!</p>
+      <label id="winner-text" class="winner-text">Winner:</label>
+      <div id="winner-name" class="winner-name">Christian</div>
     </div>
   </div>
+</div>
 
-  <div id="gameBoard" class="board">
-      <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
-      <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
-      <div class="chessboard" id="chessboard"></div>
-      <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
-      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-      <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
-      <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/chessboardpage.js') }}"></script>
-  </div>
+<div id="gameBoard" class="board">
+    <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
+    <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
+    <div class="chessboard" id="chessboard"></div>
+    <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
+    <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chessboardpage.js') }}"></script>
+</div>
 
 
   

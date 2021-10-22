@@ -18,7 +18,6 @@ def get_db():
 
 def close_db(e=None):
     db = g.pop('db', None)
-
     if db is not None:
         db.close()
 
@@ -26,19 +25,15 @@ def init_db():
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(open('chessapp/schema.sql', 'r').read())
-        chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
         for i in range(10):
             cursor.execute(
-            '''INSERT INTO chessboard (white, black, fen) 
-                VALUES (%s, %s, %s)''', 
-                ('Empty', 'Empty', chess_starting_position_fen)
+                '''INSERT INTO chessboard
+                   DEFAULT VALUES'''
             )
             cursor.execute(
-            '''INSERT INTO practiceboard (white, black, fen) 
-                VALUES (%s, %s, %s)''', 
-                ('Empty', 'Empty', chess_starting_position_fen)
+                '''INSERT INTO practice_board
+                   DEFAULT VALUES'''
             )
-
         db.commit()
     
 @click.command('init-db')
