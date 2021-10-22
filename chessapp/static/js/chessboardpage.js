@@ -1,5 +1,6 @@
 var username = '';
 var room = document.getElementById('room').innerHTML;
+var roomNumber = room.charAt(room.length - 1);
 var white_player = '';
 var black_player = '';
 var fen = '';
@@ -214,7 +215,7 @@ socket.on("chess move", function(move) {
 
 socket.on('connect', async function() {
     username = await fetch_username();
-    socket.emit('join room', { 'username': username, 'room': room });
+    socket.emit('join room', { 'username': username, 'roomType': 'chessboard', 'roomNumber': roomNumber });
     fen = await fetch_fen();
     game.load(fen);
     board.position(game.fen());
@@ -224,11 +225,11 @@ socket.on('connect', async function() {
 
 socket.on('disconnect', function() {
     console.log('disconnecting');
-    socket.emit('leave room', { 'username': username, 'room': room });
+    socket.emit('leave room', { 'username': username, 'roomType': 'chessboard', 'roomNumber': roomNumber });
 })
 
 socket.on('join room announcement', function (data) {
-    console.log("User \"" + data['username'] + '\" has joined ' + data['room']);
+    console.log("User \"" + data['username'] + '\" has joined ' + data['room'] + roomNumber );
 });
 
 socket.on('leave room announcement', function (data) {

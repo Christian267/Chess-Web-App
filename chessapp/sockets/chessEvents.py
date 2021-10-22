@@ -15,28 +15,32 @@ def handle_connection():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-     roomss = rooms()
+     socketRooms = rooms()
      room = ''
-     for r in roomss:
-          if r.startswith('Competitive Lobby') or r.startswith('Practice Lobby'):
+     for r in socketRooms:
+          if r.startswith('chessboard') or r.startswith('practice_board'):
                room = r
+     roomType = room[:-1]
+     roomNumber = room[-1]
      leave_room(room)
-     decrement_user_count(room)
+     decrement_user_count(roomType, roomNumber)
      # emit('leave room announcement', data, room=room, include_self=False)
      emit('disconnect')
 
 @socketio.on('join room')
 def handle_join_room(data):
-     room = data['room']
+     roomType = data['roomType']
+     roomNumber = data['roomNumber']
+     room = roomType + str(roomNumber)
      username = data['username']
      join_room(room)
-     increment_user_count(room)
+     increment_user_count(roomType, roomNumber)
      print('User', username, 'has joined', room)
      emit('join room announcement', data, room=room, include_self=False)
 
-@socketio.on('leave room')
-def handle_leave_room(data):
-     room = data['room']
+# @socketio.on('leave room')
+# def handle_leave_room(data):
+#      room = data['room']
 
 
 @socketio.on('set color')
@@ -119,14 +123,13 @@ def calculate_elo_change(winner_elo, loser_elo):
      loser_elo = loser_elo - elo_change
      return winner_elo, loser_elo, elo_change
 
-def decrement_user_count(room):
-     roomType = room[:-2]
-     roomNumber = room[-1]
-     print('DECREMENT_USER_COUNT, roomType:', roomType, 'roomNumber:', roomNumber)
-     if roomType == 'Competitive Lobby':
-          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
+def decrement_user_count(roomType, roomNumber):
+     if roomType == 'chessboard':
+          board = ChessboardModel.query.filter_by(id=roomNumber).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
+          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+     print('ROOMTYPE:', roomType)
+     print(board.serialize())
      board.user_count -= 1
      if board.user_count < 0:
           board.user_count = 0
@@ -135,14 +138,12 @@ def decrement_user_count(room):
 
      
 
-def increment_user_count(room):
-     roomType = room[:-2]
-     roomNumber = room[-1]
+def increment_user_count(roomType, roomNumber):
      print('INCREMENT_USER_COUNT, roomType:', roomType, 'roomNumber:', roomNumber)
-     if roomType == 'Competitive Lobby':
-          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
+     if roomType == 'chessboard':
+          board = ChessboardModel.query.filter_by(id=roomNumber).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
+          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
      board.user_count += 1
      print('Incrementing user count:', board.user_count - 1, '->', board.user_count)
      dbAlchemy.session.commit()
