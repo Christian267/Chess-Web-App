@@ -1,10 +1,10 @@
-var socket = io.connect("http://" + document.domain + ":" + location.port);
 var username = '';
-var room = '';
+var room = document.getElementById('room').innerHTML;
 var white_player = '';
 var black_player = '';
 var fen = '';
-
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+// socket.join(room);
 
 // Document Elements
 const whiteUsernameBlock = document.getElementById('white-player');
@@ -197,7 +197,6 @@ socket.emit('set color', null);
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];
-    console.log(player_colors);
     if (white_player !== 'Empty')
         whiteUsernameBlock.innerHTML = white_player;
     else whiteUsernameBlock.innerHTML = 'Choose White';
@@ -207,24 +206,36 @@ socket.on('set player colors', function (player_colors) {
 
 });
 
-socket.on('reset board', function () {
-    white_player = 'Choose White';
-    black_player = 'Choose Black';
-});
-
-socket.on('connect', async function() {
-    username = await fetch_username();
-    fen = await fetch_fen();
-    game.load(fen);
-    board.position(game.fen());
-    highlight_current_turn();
-    if (username != '') {
-        console.log(username + ' has joined the server!');
-    }
-});
-
 socket.on("chess move", function(move) {
     game.move(move);
     board.position(game.fen());
     updateStatus(true);
+});
+
+socket.on('connect', async function() {
+    username = await fetch_username();
+    socket.emit('join room', { 'username': username, 'room': room });
+    fen = await fetch_fen();
+    game.load(fen);
+    board.position(game.fen());
+    highlight_current_turn();
+    
+});
+
+socket.on('disconnect', function() {
+    console.log('disconnecting');
+    socket.emit('leave room', { 'username': username, 'room': room });
+})
+
+socket.on('join room announcement', function (data) {
+    console.log("User \"" + data['username'] + '\" has joined ' + data['room']);
+});
+
+socket.on('leave room announcement', function (data) {
+    console.log('User \"' + data['username'] + '\" has left ' + data['room']);
+});
+
+socket.on('reset board', function () {
+    white_player = 'Choose White';
+    black_player = 'Choose Black';
 });

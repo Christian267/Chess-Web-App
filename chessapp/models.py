@@ -18,12 +18,12 @@ class ChessboardModel(dbAlchemy.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
-            'white': self.white,
-            'black': self.black,
-            'board_status': self.board_status,
-            'user_count': self.user_count,
-            'fen': self.fen
+            'id'            : self.id,
+            'white'         : self.white,
+            'black'         : self.black,
+            'board_status'  : self.board_status,
+            'user_count'    : self.user_count,
+            'fen'           : self.fen
         }
 
 
@@ -41,11 +41,11 @@ class HistoryModel(dbAlchemy.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
+            'id'         : self.id,
             'time_played': self.time_played,
-            'winner_id': self.winner_id,
-            'loser_id': self.loser_id,
-            'elo_change': self.elo_change,
+            'winner_id'  : self.winner_id,
+            'loser_id'   : self.loser_id,
+            'elo_change' : self.elo_change,
             'game_length': self.game_length
         }
         
@@ -64,10 +64,10 @@ class PracticeboardModel(dbAlchemy.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
-            'board_status': self.board_status,
-            'user_count': self.user_count,
-            'fen': self.fen
+            'id'            : self.id,
+            'board_status'  : self.board_status,
+            'user_count'    : self.user_count,
+            'fen'           : self.fen
         }
 
 class UserModel(dbAlchemy.Model):
@@ -82,8 +82,8 @@ class UserModel(dbAlchemy.Model):
 
     def serialize(self):
         return {
-            'id': self.id,
-            'username': self.username,
-            'pw': self.pw,
-            'elo': self.elo
+            'id'        : self.id,
+            'username'  : self.username,
+            'pw'        : self.pw,
+            'elo'       : self.elo
         }

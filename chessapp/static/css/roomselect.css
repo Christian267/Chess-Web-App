@@ -4,7 +4,6 @@
 .sections-lobbies {
     font-family: "Poppins", sans-serif;
     position: absolute;
-    top: 100px;
 }
 
 .section-lobbies a {
@@ -25,8 +24,8 @@
 
 
 .section-lobbies .header {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 10px;
+    margin-bottom: 25px;
 }
 
 .section-lobbies .header h3 {

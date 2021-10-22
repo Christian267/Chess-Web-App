@@ -30,7 +30,6 @@ def roomselect():
     for i in range(len(chessboardRows)):
         chessboardRows[i] = chessboardRows[i].serialize()
         practiceBoardRows[i] = practiceBoardRows[i].serialize()
-        print(chessboardRows[i]['board_status'])
     chessboardRows.sort(key=lambda chessboardRow: chessboardRow['id'])
     practiceBoardRows.sort(key=lambda practiceBoardRow: practiceBoardRow['id'])
     return render_template('chess/roomselect.html', **{'chessboards': chessboardRows, 'practiceboards': practiceBoardRows})
@@ -40,8 +39,7 @@ def roomselect():
 def chessboard():
     db = get_db()
     room = request.args.to_dict()
-    print(room)
-    return render_template('chess/chessboard.html')
+    return render_template('chess/chessboard.html', room=room)
 
 @chess_bp.route('/get_username')
 def get_username():
@@ -57,7 +55,7 @@ def get_players():
         players = cursor.execute(
         '''SELECT white AND black 
             FROM   chessboard 
-            WHERE  id = 0'''
+            WHERE  id = 1'''
         )
     return players
 

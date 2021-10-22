@@ -3,6 +3,7 @@ from flask_restful import Api, Resource, reqparse, abort, fields, marshal_with
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
+
 from __main__ import api
 from chessapp import dbAlchemy
 from chessapp.models import UserModel
