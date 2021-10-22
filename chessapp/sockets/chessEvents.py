@@ -44,22 +44,28 @@ def handle_join_room(data):
 
 
 @socketio.on('set color')
-def handle_set_color(playerColor):
+def handle_set_color(data):
      """
      Handles updating the player color tag on the chessboard page.
-     :param playerColor: dict{'color': str, 'name': str}
+     :param data: dict{'roomType': str, 'roomNumber': int, 'color': str, 'username': str}
      """
-     if playerColor:
-          update_player_color(playerColor['color'], playerColor['name'])
-     white_player = get_player('white')
-     black_player = get_player('black')
+     roomType = data['roomType']
+     roomNumber = data['roomNumber']
+     room = roomType + str(roomNumber)
+     if 'color' in data:
+          update_player_color(data['color'], data['username'], roomType, roomNumber)
+     white_player = get_player('white', roomType, roomNumber)
+     black_player = get_player('black', roomType, roomNumber)
      players = {'white': white_player, 'black': black_player}
-     emit('set player colors', players, broadcast=True)
+     emit('set player colors', players, room=room)
 
 @socketio.on('chess move')
-def handle_chess_move(json):
-     update_board_state(json['board_state'])
-     emit('chess move', json['move'], broadcast=True, include_self=False)
+def handle_chess_move(data):
+     roomType = data['roomType']
+     roomNumber = data['roomNumber']
+     room = roomType + str(roomNumber)
+     update_board_state(data['board_state'], roomType, roomNumber)
+     emit('chess move', data['move'], room=room, include_self=False)
 
 @socketio.on('game end')
 def handle_game_end(results):
@@ -128,38 +134,42 @@ def decrement_user_count(roomType, roomNumber):
           board = ChessboardModel.query.filter_by(id=roomNumber).first()
      else:
           board = PracticeboardModel.query.filter_by(id=roomNumber).first()
-     print('ROOMTYPE:', roomType)
-     print(board.serialize())
      board.user_count -= 1
      if board.user_count < 0:
           board.user_count = 0
-     print('Decrementing user count:', board.user_count + 1, '->', board.user_count)
      dbAlchemy.session.commit()
 
      
 
 def increment_user_count(roomType, roomNumber):
-     print('INCREMENT_USER_COUNT, roomType:', roomType, 'roomNumber:', roomNumber)
      if roomType == 'chessboard':
           board = ChessboardModel.query.filter_by(id=roomNumber).first()
      else:
           board = PracticeboardModel.query.filter_by(id=roomNumber).first()
      board.user_count += 1
-     print('Incrementing user count:', board.user_count - 1, '->', board.user_count)
      dbAlchemy.session.commit()
 
-def get_player(color):
+def get_player(color, roomType, roomNumber):
      """
      Values used to update the player tags on the chessboard UI.
      """
-     db = get_db()
-     with db.cursor() as cursor:
-          cursor.execute(
-               f'''SELECT {color} 
-                   FROM   chessboard
-                   WHERE id=1'''
-          )
-          return cursor.fetchone()[color]
+     if roomType == 'chessboard':
+          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+     else:
+          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+
+     if color == 'white':
+          return board.white
+     return board.black
+
+     # db = get_db()
+     # with db.cursor() as cursor:
+     #      cursor.execute(
+     #           f'''SELECT {color} 
+     #               FROM   chessboard
+     #               WHERE id=1'''
+     #      )
+     #      return cursor.fetchone()[color]
 
 def get_user_id(username):
      """
@@ -175,20 +185,28 @@ def get_user_id(username):
           )
           return cursor.fetchone()['id']
 
-def update_board_state(board_state):
+def update_board_state(board_state, roomType, roomNumber):
      """
      Updates the board state to a new fen. Called every time a player makes a
      move on the chessboard.
      """
-     db = get_db()
-     with db.cursor() as cursor:
-          cursor.execute(
-               '''UPDATE chessboard
-                  SET    fen = %s
-                  WHERE  id = 1''',
-                  (board_state,)
-          )
-     db.commit()
+     if roomType == 'chessboard':
+          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+     else:
+          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+     board.fen = board_state
+     dbAlchemy.session.commit()
+
+
+     # db = get_db()
+     # with db.cursor() as cursor:
+     #      cursor.execute(
+     #           '''UPDATE chessboard
+     #              SET    fen = %s
+     #              WHERE  id = 1''',
+     #              (board_state,)
+     #      )
+     # db.commit()
 
 def update_elo(user_id, elo):
      """
@@ -205,22 +223,33 @@ def update_elo(user_id, elo):
           )
      db.commit()
 
-def update_player_color(player_color=None, player_name=None):
+def update_player_color(player_color, player_name, roomType, roomNumber):
      """
      Updates the player color in the chessboard table. This value corresponds to the 
      player color on the chessboard page UI.
      """
-     if player_color is None or player_name is None:
-          return
-     db = get_db()
-     with db.cursor() as cursor:
-          cursor.execute(
-               f'''UPDATE chessboard
-                   SET    {player_color} = %s
-                   WHERE id = 1''',
-                   (player_name,)
-          )
-     db.commit()
+     if roomType == 'chessboard':
+          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+     else:
+          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+
+     if player_color == 'white':
+          board.white = player_name
+     else:
+          board.black = player_name
+     dbAlchemy.session.commit()
+
+     # if player_color is None or player_name is None:
+     #      return
+     # db = get_db()
+     # with db.cursor() as cursor:
+     #      cursor.execute(
+     #           f'''UPDATE chessboard
+     #               SET    {player_color} = %s
+     #               WHERE id = 1''',
+     #               (player_name,)
+     #      )
+     # db.commit()
 
 def reset_chessboard():
      """

@@ -61,12 +61,14 @@ function onDrop (source, target) {
     // illegal move
     if (move === null) return 'snapback';
     
-    var move_and_board = {
+    var data = {
         move: move,
-        board_state: game.fen()
+        board_state: game.fen(),
+        roomType: 'chessboard',
+        roomNumber: roomNumber
     };
 
-    socket.emit('chess move', move_and_board);
+    socket.emit('chess move', data);
     board.position(game.fen());
     updateStatus(false);
 }
@@ -150,12 +152,13 @@ async function load_players() {
 }
 
 async function fetch_fen() {
-    return await fetch('/get_fen')
-        .then(async function (response){
+    return await fetch('/api/chessboard/' + roomNumber.toString(), {
+        method: "get",
+    }).then(async function (response){
             return await response.json();
         })
         .then(function (text) {
-            return text['board_position'];
+            return text['fen'];
         });
 }
 
@@ -171,12 +174,12 @@ function highlight_current_turn() {
 }
 
 function set_color(color) {
-    var player_and_color = {
-        color: color,
-        name:  username
-    };
-
-    socket.emit('set color', player_and_color);
+    socket.emit('set color', {
+        'roomType': 'chessboard',
+        'roomNumber': roomNumber,
+        'color': color,
+        'username': username
+    });
 }
 
 function open_modal() {
@@ -194,7 +197,7 @@ window.onclick = function(event) {
     }
     }
 
-socket.emit('set color', null);
+socket.emit('set color', {'roomType': 'chessboard', 'roomNumber': roomNumber});
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];

@@ -28,6 +28,15 @@ def roomselect():
     chessboardRows = ChessboardModel.query.all()
     practiceBoardRows = PracticeboardModel.query.all()
     for i in range(len(chessboardRows)):
+        if chessboardRows[i].fen == 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1':
+            chessboardRows[i].status = 'Available'
+        else:
+            chessboardRows[i].status = 'Game In Progress'
+        if practiceBoardRows[i].fen == 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1':
+            practiceBoardRows[i].status = 'Available'
+        else:
+            chessboardRows[i].status = 'In Use'
+        dbAlchemy.session.commit()
         chessboardRows[i] = chessboardRows[i].serialize()
         practiceBoardRows[i] = practiceBoardRows[i].serialize()
     chessboardRows.sort(key=lambda chessboardRow: chessboardRow['id'])
@@ -61,16 +70,23 @@ def get_players():
 
 @chess_bp.route('/get_fen')
 def get_fen():
-    db = get_db()
-    data = {'board_position': ''}
-    with db.cursor() as cursor:
-        cursor.execute(
-            '''SELECT fen
-            FROM   chessboard
-            WHERE  id = 1'''
-        )
-        board_position = cursor.fetchone()['fen']
-    data['board_position'] = board_position
+    roomType = request.json('roomType')
+    roomNumber = request.json('roomNumber')
+    if roomType == 'chessboard':
+        board = ChessboardModel.query.filter_by(id=roomNumber).first()
+    else:
+        board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+    data = {'fen': board.fen}
+    # db = get_db()
+    # data = {'board_position': ''}
+    # with db.cursor() as cursor:
+    #     cursor.execute(
+    #         '''SELECT fen
+    #         FROM   chessboard
+    #         WHERE  id = 1'''
+    #     )
+    #     board_position = cursor.fetchone()['fen']
+    # data['board_position'] = board_position
     return jsonify(data)
 
 @chess_bp.route('/resetboard')
