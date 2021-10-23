@@ -165,6 +165,17 @@ async function fetch_fen() {
         });
 }
 
+async function fetch_puzzle() {
+    return await fetch('api/chesspuzzle/', {
+        method: "get",
+    }).then(async function (response){
+        return await response.json();
+    })
+    .then(function (puzzles) {
+        return puzzles;
+    })
+}
+
 function highlight_current_turn() {
     if (game.turn() === 'w') {
         blackUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, 0)';
@@ -174,6 +185,11 @@ function highlight_current_turn() {
         blackUsernameBlock.style.boxShadow = '0 0 2px 2px rgba(0, 0, 255, .9)';
         whiteUsernameBlock.style.boxShadow = '0 0 0px 0px rgba(0, 0, 255, 0)';
     }
+}
+
+async function load_puzzle() {
+    puzzles = await fetch_puzzle()
+    console.log(puzzles);
 }
 
 function set_color(color) {

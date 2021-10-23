@@ -33,6 +33,7 @@
   height: 50px;
   width: 225px;
   padding: 15px 50px;
+  border-radius: 3px 3px 3px 3px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -171,15 +172,16 @@
 
 <div id="gameBoard" class="board">
   <h5 id="room" class="room-1">Practice Lobby {{room['room']}}</h5>
-    <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
-    <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
-    <div class="chessboard" id="chessboard"></div>
-    <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
-    <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/practiceboardpage.js') }}"></script>
+  <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
+  <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
+  <button type="button" class="button load-puzzle" id="load-puzzle-button" onclick="load_puzzle()">Load Puzzle</button>
+  <div class="chessboard" id="chessboard"></div>
+  <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/chess.js') }}"></script>
+  <script src="{{ url_for('static', filename='node_modules/socket.io/client-dist/socket.io.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/practiceboardpage.js') }}"></script>
 </div>
 
 

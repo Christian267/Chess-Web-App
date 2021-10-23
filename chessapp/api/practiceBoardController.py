@@ -20,10 +20,10 @@ class Practiceboard(Resource):
         return board.serialize()
 
     def put(self, board_id):
+        args = user_put_args.parse_args()
         board = PracticeboardModel.query.filter_by(id=board_id).first()
         if not board:
             abort(404, message=f'Board id:{board_id} not found')
-        args = user_put_args.parse_args()
         board.fen = args['fen']
         dbAlchemy.session.commit()
         return board.serialize()

@@ -13,8 +13,8 @@ api = Api(app)
 
 
 from chessapp.sockets import chessEvents
-from chessapp.api import userController,\
-    chessboardController, practiceBoardController, historyController
+from chessapp.api import userController, chessboardController,\
+    practiceBoardController, historyController, chessPuzzleController
 
 if __name__=='__main__':
     socketio.run(app, debug=bool(config.DevelopmentConfig.DEBUG), host=str(config.DevelopmentConfig.SERVER))

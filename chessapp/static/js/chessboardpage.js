@@ -199,7 +199,6 @@ window.onclick = function(event) {
     }
     }
 
-socket.emit('set color', {'roomType': 'chessboard', 'roomNumber': roomNumber});
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];
@@ -221,6 +220,7 @@ socket.on("chess move", function(move) {
 socket.on('connect', async function() {
     username = await fetch_username();
     socket.emit('join room', { 'username': username, 'roomType': 'chessboard', 'roomNumber': roomNumber });
+    socket.emit('set color', {'roomType': 'chessboard', 'roomNumber': roomNumber});
     fen = await fetch_fen();
     game.load(fen);
     board.position(game.fen());
