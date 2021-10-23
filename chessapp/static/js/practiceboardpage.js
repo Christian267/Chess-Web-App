@@ -133,6 +133,7 @@ function updateStatus (update_from_server) {
 }
 
 // Server communication
+
 async function fetch_username() {
     return await fetch('/get_username')
         .then(async function (response){

@@ -28,7 +28,7 @@ CREATE TABLE practice_board (
     fen             VARCHAR NOT NULL DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 );
 
-CREATE TABLE chess_puzzles (
+CREATE TABLE chess_puzzle (
     id          SERIAL PRIMARY KEY,
     fen         VARCHAR NOT NULL,
     solution    VARCHAR NOT NULL

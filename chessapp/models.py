@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
-from chessapp import dbAlchemy
+from chessapp import db, dbAlchemy
 
 class ChessboardModel(dbAlchemy.Model):
     __tablename__ = 'chessboard'
@@ -27,6 +27,23 @@ class ChessboardModel(dbAlchemy.Model):
             'user_count'    : self.user_count,
             'turn_number'   : self.turn_number,
             'fen'           : self.fen
+        }
+
+
+class ChessPuzzleModel(dbAlchemy.Model):
+    __tablename__ = 'chess_puzzle'
+    id = dbAlchemy.Column(dbAlchemy.Integer, primary_key=True)
+    fen = dbAlchemy.Column(dbAlchemy.String(100), nullable=False)
+    solution = dbAlchemy.Column(dbAlchemy.String(100), nullable=False)
+
+    def __repr__(self):
+        return f"Chess Puzzle(fen = {self.fen}, solution = {self.solution})"
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'fen': self.fen,
+            'solution': self.solution
         }
 
 

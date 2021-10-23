@@ -96,17 +96,17 @@ The required python packages to run this application are found in requirements.t
 4. Initialize the database
    ```sh
    BASH
-   $ export FLASK_APP=chessapp
+   $ export FLASK_APP = chessapp
    $ flask run
    ```
    CMD
    ```sh
-   > set FLASK_APP=chessapp
+   > set FLASK_APP = chessapp
    > flask run
    ```
    Powershell
    ```sh
-   > $env:FLASK_APP = "flaskr"
+   > $env:FLASK_APP = chessapp
    > flask run
    ```
   
