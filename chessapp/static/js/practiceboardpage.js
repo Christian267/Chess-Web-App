@@ -188,8 +188,15 @@ function highlight_current_turn() {
 }
 
 async function load_puzzle() {
-    puzzles = await fetch_puzzle()
-    console.log(puzzles);
+    puzzles = await fetch_puzzle();
+    const randInt = Math.floor(Math.random() * (Object.keys(puzzles).length) + 1).toString();
+    puzzle = puzzles[randInt];
+    const fen = {
+        fen: puzzle['fen']
+    }
+    save_fen(fen);
+    console.log(JSON.stringify(fen));
+    socket.emit('practice board move')
 }
 
 function set_color(color) {
@@ -199,6 +206,16 @@ function set_color(color) {
         'color': color,
         'username': username
     });
+}
+
+function save_fen(fen) {
+    fetch('api/practiceboard/' + roomNumber, {
+        method: 'PUT',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(fen)
+    })
 }
 
 function open_modal() {
@@ -216,7 +233,7 @@ window.onclick = function(event) {
     }
     }
 
-socket.emit('set color', {'roomType': 'practice_board', 'roomNumber': roomNumber});
+// socket.emit('set color', {'roomType': 'practice_board', 'roomNumber': roomNumber});
 socket.on('set player colors', function (player_colors) {
     white_player = player_colors['white'];
     black_player = player_colors['black'];

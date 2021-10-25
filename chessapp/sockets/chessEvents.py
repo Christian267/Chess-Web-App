@@ -21,7 +21,7 @@ def handle_disconnect():
           if r.startswith('chessboard') or r.startswith('practice_board'):
                room = r
      roomType = room[:-1]
-     roomNumber = room[-1]
+     roomNumber = room[len(room) - 1]
      leave_room(room)
      decrement_user_count(roomType, roomNumber)
      # emit('leave room announcement', data, room=room, include_self=False)
