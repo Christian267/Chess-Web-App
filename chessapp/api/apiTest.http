@@ -1,9 +1,9 @@
 @hostname = http://127.0.0.1:5000/
-post {{hostname}}/api/chesspuzzle
+post {{hostname}}/api/chesspuzzle/
 Content-Type: application/json
 
 {
-    "fen": "r2qkb1r/pp2nppp/3p4/2pNN1B1/2BnP3/3P4/PPP2PPP/R2bK2R w KQkq - 1 0",
+    "fen": "2pr1rk1/1p1bppp1/6p1/pP1npqPn/4N2P/P2PP3/1B2BP2/R2QK2R w KQkq - 1 0",
     "solution": "Nf6"
 }
 

@@ -111,7 +111,7 @@ function updateStatus (update_from_server) {
                 loser: loser
             }
             // ensure that only a single call to the database is performed, preventing duplicate rows in history table
-            if (update_from_server === false) socket.emit('game end', data);
+            // if (update_from_server === false) socket.emit('game end', data);
         }
 
     }
@@ -189,14 +189,16 @@ function highlight_current_turn() {
 
 async function load_puzzle() {
     puzzles = await fetch_puzzle();
-    const randInt = Math.floor(Math.random() * (Object.keys(puzzles).length) + 1).toString();
+    puzzles = Object.keys(puzzles).map((key) => puzzles[key]);
+    const randInt = Math.floor(Math.random() * (puzzles.length));
     puzzle = puzzles[randInt];
     const fen = {
         fen: puzzle['fen']
     }
     save_fen(fen);
-    console.log(JSON.stringify(fen));
-    socket.emit('practice board move')
+    game.load(puzzle['fen']);
+    board.position(game.fen());
+    socket.emit('practice board move');
 }
 
 function set_color(color) {

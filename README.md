@@ -62,10 +62,12 @@
 
 
 ### Built With
-* [Bootstrap](https://getbootstrap.com)
+* [Bootstrap](https://getbootstrap.com/)
+* [Chess.js](https://github.com/jhlywa/chess.js/)
 * [Chessboard.js](https://chessboardjs.com/)
 * [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 * [PostgreSQL](https://www.postgresql.org/)
+* [psycopg2](https://github.com/psycopg/psycopg2/)
 
 
 
