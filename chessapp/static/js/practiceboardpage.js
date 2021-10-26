@@ -195,13 +195,26 @@ async function load_puzzle() {
     puzzle = puzzles[randInt];
     const fen = {
         fen: puzzle['fen']
-    }
+    };
     const solution = puzzle['solution'];
     save_fen(fen);
     game.load(puzzle['fen']);
     board.position(game.fen());
     update_modal_text(solution);
-    socket.emit('practice board move');
+    highlight_current_turn();
+    socket.emit('load fen', { 'fen': fen, 'roomType': 'practice_board', 'roomNumber': roomNumber });
+}
+
+async function reset_board() {
+    const fen = {
+        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+    };
+    save_fen(fen);
+    game.load(fen['fen']);
+    board.position(game.fen());
+    update_modal_text('');
+    highlight_current_turn();
+    socket.emit('load fen', { 'fen': fen, 'roomType': 'practice_board', 'roomNumber': roomNumber });
 }
 
 function set_color(color) {
@@ -230,7 +243,6 @@ function open_modal() {
 function update_modal_text(solution) {
     solution = solution.split(' ');
     while (modalText.firstChild) modalText.removeChild(modalText.firstChild);
-    console.log(solution)
     for (let i=1; i<solution.length + 1; i++) {
         var stepTag = document.createElement('p');
         var stepText = document.createTextNode(i.toString() + '. ' + solution[i - 1]);
@@ -282,14 +294,21 @@ socket.on('connect', async function() {
 socket.on('disconnect', function() {
     console.log('disconnecting');
     socket.emit('leave room', { 'username': username, 'roomType': 'practice_board', 'roomNumber': roomNumber });
-})
+});
 
 socket.on('join room announcement', function (data) {
-    console.log("User \"" + data['username'] + '\" has joined ' + data['room'] + roomNumber );
+    console.log("User \"" + data['username'] + '\" has joined ' + data['roomType'] + ' ' + roomNumber );
 });
 
 socket.on('leave room announcement', function (data) {
-    console.log('User \"' + data['username'] + '\" has left ' + data['room']);
+    console.log('User \"' + data['username'] + '\" has left ' + data['roomType']);
+});
+
+socket.on('load fen', function (data) {
+    fen = data['fen'];
+    game.load(fen);
+    board.position(game.fen());
+    highlight_current_turn();
 });
 
 socket.on('reset board', function () {

@@ -29,13 +29,16 @@ def roomselect():
     practiceBoardRows = PracticeboardModel.query.all()
     for i in range(len(chessboardRows)):
         if chessboardRows[i].fen == 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1':
-            chessboardRows[i].status = 'Available'
+            chessboardRows[i].board_status = 'Available'
+        elif chessboardRows[i].user_count == 0:
+            chessboardRows[i].board_status = 'Game Finished'
         else:
-            chessboardRows[i].status = 'Game In Progress'
-        if practiceBoardRows[i].fen == 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1':
-            practiceBoardRows[i].status = 'Available'
+            chessboardRows[i].board_status = 'Game In Progress'
+
+        if practiceBoardRows[i].user_count == 0:
+            practiceBoardRows[i].board_status = 'Available'
         else:
-            chessboardRows[i].status = 'In Use'
+            practiceBoardRows[i].board_status = 'In Use'
         dbAlchemy.session.commit()
         chessboardRows[i] = chessboardRows[i].serialize()
         practiceBoardRows[i] = practiceBoardRows[i].serialize()
@@ -96,15 +99,16 @@ def get_fen():
 
 @chess_bp.route('/resetboard')
 def resetboard():
+    room = request.args.get('room')
     db = get_db()
     chess_starting_position_fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
     with db.cursor() as cursor:
         cursor.execute(
         '''UPDATE chessboard 
             SET    fen = %s 
-            WHERE  id = 1''', 
-            (chess_starting_position_fen,)
+            WHERE  id = %s''', 
+            (chess_starting_position_fen, room)
         )
     db.commit()
-    return redirect(url_for('views.home'))
+    return redirect(url_for('chess_bp.chessboard', room=room))
 

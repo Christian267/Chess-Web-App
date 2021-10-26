@@ -37,6 +37,7 @@ def handle_join_room(data):
      join_room(room)
      increment_user_count(roomType, roomNumber)
      print('User', username, 'has joined', room)
+     print('DATA:', data)
      emit('join room announcement', data, room=room, include_self=False)
 
 # @socketio.on('leave room')
@@ -59,6 +60,13 @@ def handle_set_color(data):
      black_player = get_player('black', roomType, roomNumber)
      players = {'white': white_player, 'black': black_player}
      emit('set player colors', players, room=room)
+
+@socketio.on('load fen')
+def handle_load_fen(data):
+     roomType = data['roomType']
+     roomNumber = data['roomNumber']
+     room = roomType + ' ' + roomNumber
+     emit('load fen', data['fen'], room=room, include_self=False)
 
 @socketio.on('chess move')
 def handle_chess_move(data):
