@@ -1,10 +1,48 @@
 @hostname = http://127.0.0.1:5000/
+
+
 post {{hostname}}/api/chesspuzzle/
 Content-Type: application/json
 
 {
-    "fen": "2pr1rk1/1p1bppp1/6p1/pP1npqPn/4N2P/P2PP3/1B2BP2/R2QK2R w KQkq - 1 0",
+    "fen": "2pr1rk1/1p1bppp1/6p1/pP1npqPn/4N2P/P2PP3/1B2BP2/R2QK2R w Kkq - 1 0",
     "solution": "Nf6"
+}
+
+###
+post {{hostname}}/api/chesspuzzle/
+Content-Type: application/json
+
+{
+    "fen": "2pr1rk1/1p1bppp1/6p1/pP1npqPn/4N2P/P2PP3/1B2BP2/R2QK2R w Kkq - 1 0",
+    "solution": "Nf6"
+}
+
+###
+post {{hostname}}/api/chesspuzzle/
+Content-Type: application/json
+
+{
+    "fen": "4kb1r/p2n1ppp/4q3/4p1B1/4P3/1Q6/PPP2PPP/2KR4 w k - 1 5",
+    "solution": "Qb8+ Nxb8 Rd8#"
+}
+
+###
+post {{hostname}}/api/chesspuzzle/
+Content-Type: application/json
+
+{
+    "fen": "1rb4r/pkPp3p/1b1P3n/1Q6/N3Pp2/8/P1P3PP/7K w - - 1 1",
+    "solution": "Qd5+ Ka6 cxb8=N#"
+}
+
+###
+post {{hostname}}/api/chesspuzzle/
+Content-Type: application/json
+
+{
+    "fen": "2pr1rk1/1p1bppp1/6p1/pP1npqPn/4N2P/P2PP3/1B2BP2/R2QK2R w Kkq - 1 1",
+    "solution": "Nf6+ gxf6 Bxf7#"
 }
 
 ###

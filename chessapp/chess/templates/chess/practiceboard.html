@@ -14,8 +14,15 @@
 }
 
 .board h5 {
+  margin: 5px 5px 5px 10px;
+}
+
+.room-wrapper {
+  background-color: rgba(26, 71, 236, 0.555);
   float: left;
-  margin: 5px 0 0 10px;
+  border-bottom: 3px solid black;
+  border-right: 3px solid black;
+  border-radius: 0px 5px 5px 0px;
 }
 
 .chessboard{
@@ -60,9 +67,6 @@
     transition: all 1 ease;
 }
 
-.white:hover {
-  filter: brightness(0.95);
-}
 
 .black {
   border: 1px solid black;
@@ -75,10 +79,6 @@
   position: relative;
   }
 
-.black:hover {
-  background-color: rgb(32, 32, 32);
-}
-
 .turn{
   position: relative;
   left: 300px;
@@ -88,6 +88,24 @@
   font-weight: 600;
   letter-spacing: -1px;
   line-height: 1;
+}
+
+.load-puzzle {
+  background-color: white;
+  border: 2px solid rgb(59, 59, 59);
+}
+
+.view-solution {
+  background-color: white;
+  border: 2px solid rgb(59, 59, 59);
+}
+
+.load-puzzle:hover {
+  background-color:rgba(26, 71, 236, 0.555)
+}
+
+.view-solution:hover {
+  background-color:rgba(26, 71, 236, 0.555)
 }
   /* The Modal (background) */
 .modal {
@@ -158,24 +176,24 @@
 }
 </style>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/chessboard-1.0.0.css') }}">
-<!-- <button id="myBtn" onclick="open_modal()">Open Modal</button> -->
 <div id="game-end-modal" class="modal">
   <div class="modal-content">
     <span class="close" id="modal-close">&times;</span>
-    <div class="modal-content-text">
-      <p id="game-over" class="game-over">Game over, white is in checkmate!</p>
-      <label id="winner-text" class="winner-text">Winner:</label>
-      <div id="winner-name" class="winner-name">Christian</div>
+    <div id="modal-content-text" class="modal-content-text">
+      <p id="game-over" class="game-over">1. NF6 +</p>
     </div>
   </div>
 </div>
 
 <div id="gameBoard" class="board">
-  <h5 id="room" class="room-1">Practice Lobby {{room['room']}}</h5>
+  <div id="room-wrapper" class="room-wrapper">
+    <h5 id="room" class="room">Practice Lobby {{room['room']}}</h5>
+  </div>
   <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
   <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
-  <button type="button" class="button load-puzzle" id="load-puzzle-button" onclick="load_puzzle()">Load Puzzle</button>
   <div class="chessboard" id="chessboard"></div>
+  <button type="button" class="button load-puzzle" id="load-puzzle-button" onclick="load_puzzle()">Load Puzzle</button>
+  <button type="button" class="button view-solution" id="view-solution-button" onclick="open_modal()">View Solution</button>
   <!-- <img src="{{url_for('static', filename='images/linus.jpg')}}" -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="{{ url_for('static', filename='js/chessboard-1.0.0.js') }}"></script>

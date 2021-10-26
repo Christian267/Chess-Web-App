@@ -13,11 +13,18 @@
   box-shadow: 0 4px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
 }
 
+
 .board h5 {
-  float: left;
-  margin: 5px 0 0 10px;
+  margin: 5px 5px 5px 10px;
 }
 
+.room-wrapper {
+  background-color: rgba(236, 103, 26, 0.555);
+  float: left;
+  border-bottom: 3px solid black;
+  border-right: 3px solid black;
+  border-radius: 0px 5px 5px 0px;
+}
 .chessboard{
   left: -190px;
   width: 700px;
@@ -171,7 +178,9 @@
 </div>
 
 <div id="gameBoard" class="board">
-  <h5 id="room" class="room-1">Competitive Lobby {{room['room']}}</h5>
+  <div id="room-wrapper" class="room-wrapper">
+    <h5 id="room" class="room">Competitive Lobby {{room['room']}}</h5>
+  </div>
     <button type="button" class="button white" id="white-player" onclick="set_color('white')"></button>   
     <button type="button" class="button black" id="black-player" onclick="set_color('black')"></button>
     <div class="chessboard" id="chessboard"></div>

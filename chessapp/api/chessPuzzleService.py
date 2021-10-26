@@ -65,10 +65,23 @@ def validate_fen(fen):
         res['error_count'] += 1
         res['error_messages'].append('2nd field: Invalid character.')
 
-    castle = ['-', 'K', 'KQ', 'Kk', 'Kq', 'Qk', 'Qq', 'kq', 'KQk', 'KQq', 'KkQ', 'Kkq' 'Qkq', 'KQkq']
-    if words[2] not in castle:
-        res['error_count'] += 1
-        res['error_messages'].append('3rd field: Invalid castle string, must follow order \'KQkq\' or \'-\' for none.')
+    # castle = ['-', 'K', 'KQ', 'Kk', 'Kq', 'Qk', 'Qq', 'kq', 'KQk', 'KQq', 'KkQ', 'Kkq' 'Qkq', 'KQkq']
+    castleChars = ['K', 'Q', 'k', 'q']
+    latestCharIndex = -1
+    # if words[2] not in castle:
+    for ch in words[2]:
+        if ch == '-':
+            break
+        if ch not in castleChars:
+            res['error_count'] += 1
+            res['error_messages'].append('3rd field: Invalid castle string, invalid character entered.')
+            break
+        chIndex = castleChars.index(ch)
+        if chIndex <= latestCharIndex:
+            res['error_count'] += 1
+            res['error_messages'].append('3rd field: Invalid castle string, must follow order \'KQkq\' or \'-\' for none.')
+            break
+        
 
     if words[3] != '-' and (words[3][0] not in 'abcdefgh' or words[3][2] not in '12345678'):
         res['error_count'] += 1

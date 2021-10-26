@@ -1,6 +1,6 @@
 var username = '';
-var room = document.getElementById('room').innerHTML;
-var roomNumber = room.charAt(room.length - 1);
+var roomWords = document.getElementById('room').innerHTML.split(' ');
+var roomNumber = roomWords[roomWords.length - 1];
 var white_player = '';
 var black_player = '';
 var fen = '';
@@ -14,6 +14,7 @@ const gameOverText = document.getElementById('game-over');
 const winnerName = document.getElementById('winner-name');
 const modal = document.getElementById("game-end-modal");
 const modalSpan = document.getElementsByClassName("close")[0];
+const modalText = document.getElementById("modal-content-text");
 
 // chessboard
 var board = null;
@@ -155,7 +156,7 @@ async function load_players() {
 }
 
 async function fetch_fen() {
-    return await fetch('/api/practiceboard/' + roomNumber.toString(), {
+    return await fetch('/api/practiceboard/' + roomNumber, {
         method: "get",
     }).then(async function (response){
             return await response.json();
@@ -195,9 +196,11 @@ async function load_puzzle() {
     const fen = {
         fen: puzzle['fen']
     }
+    const solution = puzzle['solution'];
     save_fen(fen);
     game.load(puzzle['fen']);
     board.position(game.fen());
+    update_modal_text(solution);
     socket.emit('practice board move');
 }
 
@@ -222,6 +225,18 @@ function save_fen(fen) {
 
 function open_modal() {
     modal.style.display = 'block';
+}
+
+function update_modal_text(solution) {
+    solution = solution.split(' ');
+    while (modalText.firstChild) modalText.removeChild(modalText.firstChild);
+    console.log(solution)
+    for (let i=1; i<solution.length + 1; i++) {
+        var stepTag = document.createElement('p');
+        var stepText = document.createTextNode(i.toString() + '. ' + solution[i - 1]);
+        stepTag.appendChild(stepText);
+        modalText.appendChild(stepTag);
+    }
 }
 
 modalSpan.onclick = function() {

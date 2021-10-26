@@ -6,7 +6,7 @@ import config
 from __main__ import api
 from chessapp import dbAlchemy
 from chessapp.models import ChessPuzzleModel
-from chessapp.api.practiceBoardService import validate_fen
+from chessapp.api.chessPuzzleService import validate_fen
 
 
 user_post_args = reqparse.RequestParser()
@@ -22,6 +22,10 @@ class ChessPuzzle(Resource):
             abort(400, message='Invalid fen', 
                        error_count=res['error_count'],
                        error_messages=res['error_messages'])
+        queryResult = ChessPuzzleModel.query.filter_by(fen=args['fen']).first()
+        if queryResult:
+            abort(409, message=f'This puzzle has already been submitted')
+        print(args['solution'])
         newPuzzle = ChessPuzzleModel(fen=args['fen'], solution=args['solution'])
         dbAlchemy.session.add(newPuzzle)
         dbAlchemy.session.commit()

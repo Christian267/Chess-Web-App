@@ -1,6 +1,6 @@
 var username = '';
-var room = document.getElementById('room').innerHTML;
-var roomNumber = room.charAt(room.length - 1);
+var roomWords = document.getElementById('room').innerHTML.split(' ');
+var roomNumber = roomWords[roomWords.length - 1];
 var white_player = '';
 var black_player = '';
 var fen = '';
@@ -154,7 +154,7 @@ async function load_players() {
 }
 
 async function fetch_fen() {
-    return await fetch('/api/chessboard/' + roomNumber.toString(), {
+    return await fetch('/api/chessboard/' + roomNumber, {
         method: "get",
     }).then(async function (response){
             return await response.json();

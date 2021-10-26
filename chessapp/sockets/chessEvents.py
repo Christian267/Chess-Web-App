@@ -20,8 +20,9 @@ def handle_disconnect():
      for r in socketRooms:
           if r.startswith('chessboard') or r.startswith('practice_board'):
                room = r
-     roomType = room[:-1]
-     roomNumber = room[len(room) - 1]
+     roomWords = room.split()
+     roomType = roomWords[0]
+     roomNumber = roomWords[1]
      leave_room(room)
      decrement_user_count(roomType, roomNumber)
      # emit('leave room announcement', data, room=room, include_self=False)
@@ -31,7 +32,7 @@ def handle_disconnect():
 def handle_join_room(data):
      roomType = data['roomType']
      roomNumber = data['roomNumber']
-     room = roomType + str(roomNumber)
+     room = roomType + ' ' + roomNumber
      username = data['username']
      join_room(room)
      increment_user_count(roomType, roomNumber)
@@ -51,7 +52,7 @@ def handle_set_color(data):
      """
      roomType = data['roomType']
      roomNumber = data['roomNumber']
-     room = roomType + str(roomNumber)
+     room = roomType + ' ' + roomNumber
      if 'color' in data:
           update_player_color(data['color'], data['username'], roomType, roomNumber)
      white_player = get_player('white', roomType, roomNumber)
@@ -63,7 +64,7 @@ def handle_set_color(data):
 def handle_chess_move(data):
      roomType = data['roomType']
      roomNumber = data['roomNumber']
-     room = roomType + str(roomNumber)
+     room = roomType + ' ' + roomNumber
      update_board_state(data['board_state'], roomType, roomNumber)
      emit('chess move', data['move'], room=room, include_self=False)
 
@@ -103,7 +104,7 @@ def add_game_to_history(winner_id, loser_id, elo_change, game_length):
           cursor.execute(
           '''INSERT INTO history (winner_id, loser_id, elo_change, game_length) 
              VALUES (%s, %s, %s, %s)''', 
-             (winner_id, loser_id, elo_change, game_length)
+             (winner_id, loser_id, elo_change, int(game_length))
           )     
      db.commit()
 
@@ -124,9 +125,9 @@ def calculate_elo_change(winner_elo, loser_elo):
 
 def decrement_user_count(roomType, roomNumber):
      if roomType == 'chessboard':
-          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
      board.user_count -= 1
      if board.user_count < 0:
           board.user_count = 0
@@ -136,9 +137,9 @@ def decrement_user_count(roomType, roomNumber):
 
 def increment_user_count(roomType, roomNumber):
      if roomType == 'chessboard':
-          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
      board.user_count += 1
      dbAlchemy.session.commit()
 
@@ -162,9 +163,9 @@ def get_player(color, roomType, roomNumber):
      Values used to update the player tags on the chessboard UI.
      """
      if roomType == 'chessboard':
-          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
 
      if color == 'white':
           return board.white
@@ -199,10 +200,10 @@ def update_board_state(board_state, roomType, roomNumber):
      move on the chessboard.
      """
      if roomType == 'chessboard':
-          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
           board.turn_number += 1
      else:
-          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
      board.fen = board_state
      dbAlchemy.session.commit()
 
@@ -238,9 +239,9 @@ def update_player_color(player_color, player_name, roomType, roomNumber):
      player color on the chessboard page UI.
      """
      if roomType == 'chessboard':
-          board = ChessboardModel.query.filter_by(id=roomNumber).first()
+          board = ChessboardModel.query.filter_by(id=int(roomNumber)).first()
      else:
-          board = PracticeboardModel.query.filter_by(id=roomNumber).first()
+          board = PracticeboardModel.query.filter_by(id=int(roomNumber)).first()
 
      if player_color == 'white':
           board.white = player_name
@@ -271,7 +272,7 @@ def reset_chessboard(roomType, roomNumber):
           '''UPDATE chessboard 
              SET    white = %s, black = %s, fen = %s, turn_number = 0
              WHERE  id = %s''', 
-             ('Empty', 'Empty', chess_starting_fen, roomNumber)
+             ('Empty', 'Empty', chess_starting_fen, int(roomNumber))
           )
           # cursor.execute(
           # '''UPDATE chessboard 
