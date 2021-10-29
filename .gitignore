@@ -129,7 +129,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-
-### Node Modules ###
-chessapp/static/node_modules/
