@@ -5,13 +5,20 @@ import os
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
+DBHOST=os.getenv('DBHOST')
+DBUSER = os.getenv('DBUSER')
+DBPASSWORD = ':' + os.getenv('DBPASSWORD')
+DBNAME = os.getenv('DBNAME')
+DBPORT = os.getenv('DBPORT')
 
 class Config:
     """Set Flask configuration vars from .env file."""
     TESTING = os.getenv('TESTING')
     SECRET_KEY = os.getenv('SECRET_KEY')
-    SERVER = os.getenv('SERVER')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SERVER = os.getenv('SERVERHOST', '0.0.0.0')
+    SERVERPORT = os.getenv('SERVERPORT', '5000')
+    SQLALCHEMY_DATABASE_URI = f'postgresql://{DBUSER}{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBNAME}'
+    print(SQLALCHEMY_DATABASE_URI)
     TEMPLATES_AUTO_RELOAD=True
 
 class ProductionConfig(Config):

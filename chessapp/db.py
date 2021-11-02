@@ -8,7 +8,7 @@ import os
 def get_db():
     if 'db' not in g:
         g.db = psycopg2.connect(
-            host=os.getenv('DBHOST'),
+            # host=os.getenv('DBHOST'),
             database=os.getenv('DBNAME'),
             user=os.getenv('DBUSER'),
             cursor_factory=psycopg2.extras.DictCursor)

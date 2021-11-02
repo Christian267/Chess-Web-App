@@ -6,7 +6,6 @@
   <p align="center">
     <a href="https://github.com/Christian267/Chess-Web-App"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"></a>
     <a href="https://github.com/christian267/chess-web-app/issues">Report Bug</a>
   </p>
 </p>
@@ -99,17 +98,17 @@ The required python packages to run this application are found in requirements.t
    ```sh
    BASH
    $ export FLASK_APP = chessapp
-   $ flask run
+   $ flask init-db
    ```
    CMD
    ```sh
    > set FLASK_APP = chessapp
-   > flask run
+   > flask init-db
    ```
    Powershell
    ```sh
    > $env:FLASK_APP = chessapp
-   > flask run
+   > flask init-db
    ```
   
 5. Run the Flask application and copy/paste the resulting url into your browser
