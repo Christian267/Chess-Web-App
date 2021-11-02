@@ -42,13 +42,14 @@
 
 .section-lobbies .single-lobby {
     align-self: center;
-    border-radius: 5px 5px 5px 5px;
+    border-radius: 4px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, .30);
     margin-bottom: 26px;
     margin-left: 30px;
-    max-width: 190px;
+    max-width: 180px;
     overflow: hidden;
     transition: transform 300ms, box-shadow 300ms;
+    padding: 0.5em;
 }
 
 .section-lobbies .single-lobby:hover {

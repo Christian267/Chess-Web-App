@@ -87,7 +87,7 @@ class PracticeboardModel(dbAlchemy.Model):
             'id'            : self.id,
             'board_status'  : self.board_status,
             'user_count'    : self.user_count,
-            'fen'           : self.fen
+            'fen'           : self.fen  
         }
 
 class UserModel(dbAlchemy.Model):

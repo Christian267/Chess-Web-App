@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS history;
 DROP TABLE IF EXISTS chessboard;
 DROP TABLE IF EXISTS practice_board;
-DROP TABLE IF EXISTS chess_puzzles;
+DROP TABLE IF EXISTS chess_puzzle;
 
 CREATE TABLE users (
     id       SERIAL PRIMARY KEY,
@@ -28,7 +28,7 @@ CREATE TABLE practice_board (
     fen             VARCHAR NOT NULL DEFAULT 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 );
 
-CREATE TABLE chess_puzzle (
+CREATE TABLE  chess_puzzle (
     id          SERIAL PRIMARY KEY,
     fen         VARCHAR NOT NULL,
     solution    VARCHAR NOT NULL

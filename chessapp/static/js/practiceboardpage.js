@@ -89,7 +89,6 @@ function updateStatus (update_from_server) {
         statusText = 'Game over, ' + moveColor + ' is in checkmate.';
         if (gameAlreadyEnded == false){
             gameAlreadyEnded = true;
-            open_modal();
             gameOverText.innerHTML = statusText;
             winner = white_player;
             loser = black_player;
@@ -217,15 +216,6 @@ async function reset_board() {
     socket.emit('load fen', { 'fen': fen, 'roomType': 'practice_board', 'roomNumber': roomNumber });
 }
 
-function set_color(color) {
-    socket.emit('set color', {
-        'roomType': 'practice_board',
-        'roomNumber': roomNumber,
-        'color': color,
-        'username': username
-    });
-}
-
 function save_fen(fen) {
     fetch('api/practiceboard/' + roomNumber, {
         method: 'PUT',
@@ -261,19 +251,6 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
     }
-
-// socket.emit('set color', {'roomType': 'practice_board', 'roomNumber': roomNumber});
-socket.on('set player colors', function (player_colors) {
-    white_player = player_colors['white'];
-    black_player = player_colors['black'];
-    if (white_player !== 'Empty')
-        whiteUsernameBlock.innerHTML = white_player;
-    else whiteUsernameBlock.innerHTML = 'Choose White';
-    if (black_player !== 'Empty')
-        blackUsernameBlock.innerHTML = black_player;
-    else blackUsernameBlock.innerHTML = 'Choose Black';
-
-});
 
 socket.on("chess move", function(move) {
     game.move(move);
