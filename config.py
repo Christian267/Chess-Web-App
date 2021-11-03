@@ -18,7 +18,7 @@ class Config:
     SERVER = os.getenv('SERVERHOST', '0.0.0.0')
     SERVERPORT = os.getenv('SERVERPORT', '5000')
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DBUSER}{DBPASSWORD}@{DBHOST}:{DBPORT}/{DBNAME}'
-    print(SQLALCHEMY_DATABASE_URI)
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     TEMPLATES_AUTO_RELOAD=True
 
 class ProductionConfig(Config):
