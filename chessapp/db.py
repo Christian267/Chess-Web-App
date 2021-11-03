@@ -6,7 +6,6 @@ from flask.cli import with_appcontext
 import os
 
 def get_db():
-    print('GET_DB()')
     if 'db' not in g:
         g.db = psycopg2.connect(
             host=os.getenv('DBHOST'),
@@ -23,10 +22,14 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
+
+
 def init_db():
-    print('INIT_DB()')
     db = get_db()
     with db.cursor() as cursor:
+        cursor.execute("SELECT * FROM information_schema.tables WHERE table_name=%s", ('users',))
+        if cursor.fetchone()[0]:
+            return True
         cursor.execute(open('chessapp/schema.sql', 'r').read())
         for i in range(10):
             cursor.execute(
@@ -38,13 +41,17 @@ def init_db():
                    DEFAULT VALUES'''
             )
         db.commit()
+        return False
     
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
     """Clear the existing data and create new tables"""
-    init_db()
-    click.echo('Initialized the database.')
+    tableAlreadyPresent = init_db()
+    if tableAlreadyPresent:
+        click.echo('Database already present.')
+    else:
+        click.echo('Initialized the database.')
 
 def init_app(app):
     app.teardown_appcontext(close_db)
