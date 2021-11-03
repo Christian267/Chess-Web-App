@@ -6,11 +6,13 @@ from flask.cli import with_appcontext
 import os
 
 def get_db():
+    print('GET_DB()')
     if 'db' not in g:
         g.db = psycopg2.connect(
-            # host=os.getenv('DBHOST'),
+            host=os.getenv('DBHOST'),
             database=os.getenv('DBNAME'),
             user=os.getenv('DBUSER'),
+            password=os.getenv('DBPASSWORD'),
             cursor_factory=psycopg2.extras.DictCursor)
 
     return g.db
@@ -22,6 +24,7 @@ def close_db(e=None):
         db.close()
 
 def init_db():
+    print('INIT_DB()')
     db = get_db()
     with db.cursor() as cursor:
         cursor.execute(open('chessapp/schema.sql', 'r').read())

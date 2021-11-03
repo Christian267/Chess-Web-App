@@ -10,6 +10,7 @@ view = Blueprint('views', __name__)
 
 @view.route('/')
 def home():
+    print('HOME()')
     if g.user is None:
         return render_template('index.html')
     return redirect(url_for('views.dashboard'))
@@ -69,6 +70,7 @@ def get_users():
 
 @view.before_app_request
 def load_logged_in_user():
+    print("LOAD_LOGGED_IN_USER")
     user_id = session.get('user_id')
     db = get_db()
     if user_id is None:
