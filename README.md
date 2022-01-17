@@ -4,9 +4,10 @@
 <p align="center">
   <h3 align="center">Multiplayer Chess Webapp</h3>
   <p align="center">
+  <a align="center" href="https://chess.iamchristianbenitez.com">chess.iamchristianbenitez.com</a>
+  <br />
     <a href="https://github.com/Christian267/Chess-Web-App"><strong>Explore the docs »</strong></a>
     <br />
-    <a href="https://github.com/christian267/chess-web-app/issues">Report Bug</a>
   </p>
 </p>
 
@@ -66,7 +67,6 @@
 * [Chessboard.js](https://chessboardjs.com/)
 * [Flask](https://flask.palletsprojects.com/en/2.0.x/)
 * [PostgreSQL](https://www.postgresql.org/)
-* [psycopg2](https://github.com/psycopg/psycopg2/)
 
 
 
